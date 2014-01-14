@@ -1,0 +1,19 @@
+[submodule "lib/jquery"]
+	path = lib/jquery
+	url = https://github.com/jquery/jquery.git
+[submodule "lib/underscore"]
+	path = lib/underscore
+	url = https://github.com/jashkenas/underscore.git
+[submodule "lib/backbone"]
+	path = lib/backbone
+	url = https://github.com/jashkenas/backbone.git
+[submodule "lib/require"]
+	path = lib/require
+	url = https://github.com/jrburke/requirejs.git
+
+[submodule "test/lib/chai"]
+	path = test/lib/chai
+	url = https://github.com/chaijs/chai.git
+[submodule "test/lib/mocha"]
+	path = test/lib/mocha
+	url = https://github.com/visionmedia/mocha.git

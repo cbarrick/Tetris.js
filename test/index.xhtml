@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>Tetris - Test</title>
+    <link rel="stylesheet" href="../test/lib/mocha/mocha.css"/>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script type="application/javascript" src="../lib/require/require.js"></script>
+    <script type="text/javascript">
+      //<![CDATA[
+
+      // List all tests here
+      //
+      var tests = [
+        '../test/clock',
+        '../test/event_emitter',
+        '../test/model',
+        '../test/tetrimino',
+        '../test/tetrimino_factory'
+      ]
+
+      // Setup libs here
+      //
+      require.config({
+        baseUrl: '../src',
+        shim: {
+          'mocha': {
+            exports: 'mocha'
+          }
+        },
+        paths: {
+          'mocha': '../test/lib/mocha/mocha',
+          'chai': '../test/lib/chai/chai'
+        }
+      })
+
+      // Start the test runner here
+      //
+      require(['mocha'], function (mocha) {
+        mocha.setup('bdd');
+        require(tests, function () {
+          mocha.run();
+        })
+      })
+      //]]>
+    </script>
+  </body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+	<head>
+		<meta charset="UTF-8"/>
+
+		<title>Tetris</title>
+
+		<script src="lib/require/require.js" data-main="main"
+			type="application/javascript"
+			defer="defer">
+		</script>
+
+		<style type="text/css">
+			/*<![CDATA[*/
+
+			/* Downloads
+ 			***************/
+			@import url(http://fonts.googleapis.com/css?family=Quicksand:300,400);
+
+			/* Animation keyframes
+			 ***************/
+			@-webkit-keyframes bg {
+				from { background-position: 0 29px; }
+				to { background-position: 0 0; }
+			}
+			@-moz-keyframes bg {
+				from { background-position: 0 29px; }
+				to { background-position: 0 0; }
+			}
+			@-ms-keyframes bg {
+				from { background-position: 0 29px; }
+				to { background-position: 0 0; }
+			}
+			@-o-keyframes bg {
+				from { background-position: 0 29px; }
+				to { background-position: 0 0; }
+			}
+			@keyframes bg {
+				from { background-position: 0 29px; }
+				to { background-position: 0 0; }
+			}
+
+
+			/* Reset
+			 ***************/
+			* {
+				margin: 0;
+				padding: 0;
+				-webkit-box-sizing: border-box;
+				   -moz-box-sizing: border-box;
+				    -ms-box-sizing: border-box;
+				     -o-box-sizing: border-box;
+				        box-sizing: border-box;
+			}
+			html {
+				height: 100%;
+			}
+			body {
+				height: 100%;
+				min-height: 100%;
+			}
+
+			/* Global
+			 ***************/
+			body {
+				min-width: 650px;
+				color: hsl(355,0%,40%);
+				font-family: "Quicksand", "Open Sans", sans-serif;
+				font-size: 16px;
+				background-image: url("assets/escheresque_ste.png");
+				background-repeat: repeat;
+
+				-webkit-animation: bg 1s linear 0 infinite normal none;
+				   -moz-animation: bg 1s linear 0 infinite normal none;
+				    -ms-animation: bg 1s linear 0 infinite normal none;
+				     -o-animation: bg 1s linear 0 infinite normal none;
+				        animation: bg 1s linear 0 infinite normal none;
+			}
+			a {
+				color: inherit;
+				transition: color 0.2s;
+				text-decoration: none;
+			}
+			a:hover {
+				color: hsl(355,60%,40%);
+			}
+
+			/* Header
+			 ***************/
+			header {
+				width: 100%;
+				min-width: inherit;
+				padding: 5px;
+				font-size: 24px;
+				font-weight: 300;
+
+				/* The h1 is the tallest thing in the header. The default
+				 * h1 font-size is 2em. Since we've set the font-size here to
+				 * 24px, that makes the height here 48px. We don't explicitly
+				 * set it for max flexibility */
+				/* height: 48px; */
+			}
+			header h1, header h2 {
+				display: inline-block;
+				font-weight: 300;
+			}
+			header h1 {
+				color: hsl(355,60%,40%);
+			}
+			header h2 {
+				font-size: 1em;
+				margin: 0 25px; 
+			}
+			header address {
+				display: inline;
+			}
+
+			/* Game area
+			 ***************/
+			#game {
+				height: calc(100% - 25px - 48px - 20px);
+				padding: 20px;
+				text-align: center;
+			}
+			#game > .tetris-canvas {
+				max-height: 100%;
+				display: block;
+				border: 1px solid grey;
+				margin: auto;
+				background: hsla(355, 20%, 95%, 0);
+			}
+
+			/* Audio controls
+			 ***************/
+			#music {
+				width: 100%;
+				position: fixed;
+				bottom: 0px;
+			}
+
+			/*]]>*/
+		</style>
+
+	</head>
+
+	<body>
+		<header>
+			<h1>Tetris.js</h1>
+			<h2>an experiment by <a href="https://github.com/cbarrick"><address>Chris Barrick</address></a></h2>
+		</header>
+
+		<audio id="music" autoplay="true" loop="true" controls="true">
+			<source src="assets/Tetris Korobeiniki Remix.mp3"/>
+		</audio>
+
+		<section id="game"></section>
+	</body>
+
+</html>

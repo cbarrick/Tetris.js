@@ -101,8 +101,9 @@ define(function (require, exports, module) {
 			// Pass the score event up from the score_keeper,
 			// also increase dificulty
 			score_keeper.on('score', function (score, multiplier) {
-				var newDelay = this.initialDelay * Math.pow(699/700, score);
-				this.set({'delay': newDelay});
+				var delay = this.get('delay');
+				delay *= 99/100
+				this.set({'delay': delay});
 				this.trigger('score', score, multiplier);
 			}.bind(this));
 

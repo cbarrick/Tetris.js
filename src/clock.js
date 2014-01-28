@@ -22,11 +22,11 @@ define(function (require, exports, module) {
 	 * Events
 	 * ------
 	 * All Backbone.Model events and:
-	 * - start: When the clock starts just before the first tick
-	 * - stop: When the clock stops just after the last tick
+	 * - start: Just before the clock starts after being stopped
+	 * - stop: When the clock is stopped
 	 * - restart: When the clock has been restarted
 	 * - pause: When the clock is paused
-	 * - resume: When the clock is resumed
+	 * - resume: When the clock is resumed from pause
 	 * - uptick: When a tick starts
 	 * - downtick: when a tick ends
 	 */
@@ -61,7 +61,12 @@ define(function (require, exports, module) {
 		 */
 
 		start: function () {
-			this.trigger('start', this.toJson());
+			var state = this.get('state');
+			if (state === 'stopped') {
+				this.trigger('start', this.toJson());
+			} else if (state === 'paused') {
+				this.trigger('resume', this.toJson());
+			}
 			this._start();
 		},
 

@@ -1,6 +1,7 @@
 Tetris.js
 =========
 A Tetris clone for HTML5
+
 Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
 
 This program is free software: you can redistribute it and/or modify

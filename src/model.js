@@ -1,36 +1,42 @@
 define(function (require, exports, module) {
 	'use strict';
 
+	var EventEmitter = require('event_emitter');
 	var util = require('util');
 
 
-	var Model = module.exports = function () {
-		this.constructor.apply(this, arguments);
+	var Model = module.exports = function (attributes, options) {
+		EventEmitter.call(this);
+		this.attributes = util.clone(this.attributes);
+		this.set(attributes);
+		this.initialize(options);
 	}
 
 
-	Model.prototype = {
+	Model.prototype = util.extend(Object.create(EventEmitter.prototype), {
 
 		attributes: {},
 
-		constructor: function (attributes, options) {
-			this.attributes = util.clone(this.attributes);
-			this.set(attributes);
-			this.initialize(options);
-		},
+		constructor: Model,
 
 		initialize: function (options) {},
 
 		set: function (key, value) {
-			var attrs;
+			var oldValue;
+
 			if (arguments.length > 1) {
-				attrs = {};
-				attrs[key] = value;
+				oldValue = this.attributes[key];
+				this.attributes[key] = value;
+				if (value != oldValue) {
+					this.trigger('change', key, value, oldValue);
+					this.trigger('change:' + key, value, oldValue);
+				}
+
 			} else {
-				attrs = key;
-			}
-			if (attrs instanceof Object) {
-				util.extend(this.attributes, attrs);
+				// key is assumed to be an object mapping keys to new values
+				for (var k in key) if (key.hasOwnProperty(k)) {
+					this.set(k, key[k]);
+				}
 			}
 		},
 
@@ -52,7 +58,7 @@ define(function (require, exports, module) {
 			clone.attributes = util.clone(this.attributes);
 			return clone;
 		}
-	}
+	})
 
 
 	Model.extend = function (extension) {

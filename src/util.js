@@ -2,9 +2,7 @@ define(function (require, exports, module) {
 	'use strict';
 
 
-	var util = module.exports = function (obj) {
-			// TODO: Wrapper coolness
-	}
+	var util = module.exports = {};
 
 
 	util.clone = function (obj) {
@@ -13,14 +11,14 @@ define(function (require, exports, module) {
 	}
 
 
-	util.extend = function (obj, extension) {
+	util.extend = function (base, extension) {
 		var props = Object.getOwnPropertyNames(extension);
 		var desc;
 		props.forEach(function (prop) {
 			desc = Object.getOwnPropertyDescriptor(extension, prop);
-			Object.defineProperty(obj, prop, desc);
+			Object.defineProperty(base, prop, desc);
 		})
-		return obj;
+		return base;
 	}
 
 

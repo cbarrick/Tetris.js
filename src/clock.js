@@ -1,7 +1,7 @@
 define(function (require, exports, module) {
 	'use strict';
 
-	var EventEmitter = require('event_emitter');
+	var Model = require('model');
 
 
 	/**
@@ -31,7 +31,7 @@ define(function (require, exports, module) {
 	 * - downtick: when a tick ends
 	 */
 
-	var Clock = module.exports = EventEmitter.extend({
+	var Clock = module.exports = Model.extend({
 
 		attributes: {
 			state: 'stopped',
@@ -50,8 +50,8 @@ define(function (require, exports, module) {
 		 */
 
 		initialize: function() {
-			EventEmitter.prototype.initialize.call(this);
-			this.on('change:delay', this._onChangeDelay);
+			Model.prototype.initialize.call(this);
+			this.on('change:delay', this._onChangeDelay.bind(this));
 		},
 
 
@@ -61,7 +61,6 @@ define(function (require, exports, module) {
 		 */
 
 		start: function () {
-			this.set({'state': 'running'});
 			this.trigger('start', this.toJson());
 			this._start();
 		},
@@ -91,7 +90,6 @@ define(function (require, exports, module) {
 
 		stop: function () {
 			this._stop();
-			this.set({'state': 'stopped'});
 			this.trigger('stop', this.toJson());
 		},
 
@@ -112,28 +110,15 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * clock.resume()
-		 * --
-		 * Resumes the clock if it is paused.
-		 */
-
-		resume: function () {
-			var state = this.get('state');
-			if (state == 'paused') {
-				this._start();
-				this.set({'state': 'running'});
-				this.trigger('resume', this.toJson());
-			}
-		},
-
-
 		// Starts the clock
 		//
 		_start: function () {
 			var delay = this.get('delay');
 			var intervalId = setInterval(this._tick.bind(this), delay);
-			this.set({'_intervalId': intervalId});
+			this.set({
+				'_intervalId': intervalId,
+				'state': 'running'
+			})
 		},
 
 
@@ -142,7 +127,10 @@ define(function (require, exports, module) {
 		_stop: function () {
 			var intervalId = this.get('_intervalId');
 			clearInterval(intervalId);
-			this.set({'_intervalId': null});
+			this.set({
+				'_intervalId': null,
+				'state': 'stopped'
+			})
 		},
 
 
@@ -165,12 +153,11 @@ define(function (require, exports, module) {
 		// Registered for the change:delay event.
 		// Changes the clock to the new delay even if it's already running.
 		//
-		_onChangeDelay: function (model, delay) {
-			assert(model == this);
+		_onChangeDelay: function (newdelay) {
 			var state = this.get('state');
 			if (state == 'running') {
-				_stop();
-				_start();
+				this._stop();
+				this._start();
 			}
 		}
 

@@ -11,6 +11,7 @@ define(function (require, exports, module) {
 		          // http://harddrop.com/wiki/DAS
 
 		attributes: {
+			document: document, // The DOM tree being controled
 			game: null
 		},
 
@@ -24,10 +25,14 @@ define(function (require, exports, module) {
 		initialize: function () {
 			var game = this.get('game');
 
+			this.onKeydown = this.onKeydown.bind(this);
+			this.onKeyup = this.onKeyup.bind(this);
+			this.openInstructions = this.openInstructions.bind(this);
+			this.startGame = this.startGame.bind(this);
+
 			game.on('lock', function (coords) {
 				for (var i = coords.length - 1; i >= 0; i--) {
 					if (coords[i][1] < 2) {
-						console.log('GAME OVER');
 						game.stop();
 						return;
 					}
@@ -35,7 +40,25 @@ define(function (require, exports, module) {
 				game.spawn();
 			})
 
-			game.start();
+			game.on('score', function (score, multiplier) {
+				var document = this.get('document');
+				var scores = document.getElementsByClassName('score-value');
+				for (var i = scores.length - 1; i >= 0; i-- ) {
+					scores[i].innerHTML = score;
+				}
+			}.bind(this))
+
+			game.on('stop', function () {
+				this.quitGame();
+			}.bind(this))
+
+			game.on('start', function () {
+				var document = this.get('document');
+				var scores = document.getElementsByClassName('score-value');
+				for (var i = scores.length - 1; i >= 0; i-- ) {
+					scores[i].innerHTML = 0;
+				}
+			}.bind(this));
 		},
 
 
@@ -44,12 +67,50 @@ define(function (require, exports, module) {
 		 */
 
 		delegateEvents: function () {
+			var document = this.get('document');
+			var menu = document.getElementById('menu');
+			var nextBtns = menu.getElementsByClassName('next-btn');
+			var playBtns = menu.getElementsByClassName('play-btn');
 			var game = this.get('game');
 			var view = game.get('view');
 			var canvas = view.get('el');
 
-			window.addEventListener('keydown', this.onKeydown.bind(this), false);
-			window.addEventListener('keyup', this.onKeyup.bind(this), false);
+			window.addEventListener('keydown', this.onKeydown, false);
+			window.addEventListener('keyup', this.onKeyup, false);
+
+			for (var i = nextBtns.length - 1; i >= 0; i--) {
+				nextBtns[i].addEventListener('click', this.openInstructions, false);
+			}
+
+			for (var i = playBtns.length - 1; i >= 0; i--) {
+				playBtns[i].addEventListener('click', this.startGame, false);
+			}
+		},
+
+
+		/**
+		 *
+		 */
+
+		undelegateEvents: function () {
+			var document = this.get('document');
+			var menu = document.getElementById('menu');
+			var nextBtns = menu.getElementsByClassName('next-btn');
+			var playBtns = menu.getElementsByClassName('play-btn');
+			var game = this.get('game');
+			var view = game.get('view');
+			var canvas = view.get('el');
+
+			window.removeEventListener('keydown', this.onKeydown, false);
+			window.removeEventListener('keyup', this.onKeyup, false);
+
+			for (var i = nextBtns.length - 1; i >= 0; i--) {
+				nextBtns[i].removeEventListener('click', this.openInstructions, false);
+			}
+
+			for (var i = playBtns.length - 1; i >= 0; i--) {
+				playBtns[i].removeEventListener('click', this.startGame, false);
+			}
 		},
 
 
@@ -67,7 +128,7 @@ define(function (require, exports, module) {
 
 			if ('Up' === event.keyIdentifier) {
 				action = function () {
-					if (gameState !== 'paused') {
+					if (gameState === 'running') {
 						game.resetDropTime();
 						game.rotate();
 					}
@@ -76,7 +137,7 @@ define(function (require, exports, module) {
 
 			} else if ('Down' === event.keyIdentifier) {
 				action = function () {
-					if (gameState !== 'paused') {
+					if (gameState === 'running') {
 						game.resetDropTime();
 						game.down();
 					}
@@ -84,7 +145,7 @@ define(function (require, exports, module) {
 
 			} else if ('Left' === event.keyIdentifier) {
 				action = function () {
-					if (gameState !== 'paused') {
+					if (gameState === 'running') {
 						game.resetDropTime();
 						game.left();
 					}
@@ -92,7 +153,7 @@ define(function (require, exports, module) {
 
 			} else if ('Right' === event.keyIdentifier) {
 				action = function () {
-					if (gameState !== 'paused') {
+					if (gameState === 'running') {
 						game.resetDropTime();
 						game.right();
 					}
@@ -100,7 +161,7 @@ define(function (require, exports, module) {
 
 			} else if ('U+0020' === event.keyIdentifier) {
 				action = function () {
-					if (gameState !== 'paused') {
+					if (gameState === 'running') {
 						game.drop(true);
 					}
 				}
@@ -108,7 +169,7 @@ define(function (require, exports, module) {
 
 			} else if ('Shift' === event.keyIdentifier) {
 				action = function () {
-					if (gameState !== 'paused') {
+					if (gameState === 'running') {
 						game.hold();
 					}
 				}
@@ -117,11 +178,12 @@ define(function (require, exports, module) {
 			} else if ('U+001B' === event.keyIdentifier) {
 				action = function () {
 					if (gameState === 'paused') {
-						game.resume();
+						this.startGame()
 					} else {
-						game.pause();
+						this.pauseGame();
 					}
 				}
+				action = action.bind(this);
 
 			} else {
 				valid = false;
@@ -157,6 +219,86 @@ define(function (require, exports, module) {
 			this._debounced = false;
 			clearInterval(this._keyInterval);
 			this._keyInterval = false;
+		},
+
+
+		/**
+		 * TetrisControl.prototype.openInstructions()
+		 * ------------------------------------------
+		 * Transitions from the intro panel to the instructions panel.
+		 * Assumes that the menu and into are open.
+		 */
+
+		openInstructions: function () {
+			var document = this.get('document');
+			var intro = document.getElementById('intro');
+			var instructions = document.getElementById('instructions');
+
+			// remove the 'open' class from the intro
+			intro.className = intro.className.replace(/\s*\bopen\b\s*/g, '');
+
+			// add the 'open' class to the instructions
+			instructions.className += ' open';
+		},
+
+
+		/**
+		 *
+		 */
+
+		startGame: function () {
+			var game = this.get('game');
+			var document = this.get('document');
+			var scorePanel = document.getElementById('score');
+			var opened = document.getElementsByClassName('open');
+			var escAction = document.getElementById('esc-action');
+
+			for (var j = opened.length - 1; j >= 0; j--) {
+				opened[j].className = opened[j].className.replace(/\s*\bopen\b\s*/g, '');
+			}
+
+			scorePanel.className += ' open';
+			escAction.innerHTML = "pause";
+
+			game.start();
+		},
+
+
+		/**
+		 *
+		 */
+
+		pauseGame: function () {
+			var game = this.get('game');
+			var document = this.get('document');
+			var menu = document.getElementById('menu');
+			var scorePanel = document.getElementById('score');
+			var escAction = document.getElementById('esc-action');
+
+			menu.className += ' open';
+			escAction.innerHTML = "resume";
+
+			game.pause();
+		},
+
+
+		/**
+		 *
+		 */
+
+		quitGame: function () {
+			var game = this.get('game');
+			var document = this.get('document');
+			var menu = document.getElementById('menu');
+			var scorePanel = document.getElementById('score');
+			var gameOver = document.getElementById('game-over');
+
+			scorePanel.className = scorePanel.className.replace(/\s*\bopen\b\s*/g, '');
+			gameOver.className += ' open';
+			menu.className += ' open';
+
+			// Restart the game to be ready for the next one
+			game.restart();
 		}
 
 	})

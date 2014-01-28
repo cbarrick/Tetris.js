@@ -4,6 +4,15 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
+	/**
+	 * ScoreKeeper
+	 * ===========
+	 *
+	 * Events
+	 * ------
+	 * - score (current score, multiplier): Triggers when a score is calculated 
+	 */
+
 	var ScoreKeeper = module.exports = Model.extend({
 
 		attributes: {
@@ -38,8 +47,8 @@ define(function (require, exports, module) {
 		 * argument, `rows`.
 		 *
 		 * This method is registered as a handler for the `clear` event of the
-		 * game, which is called after every lock, and gets passed an array of
-		 * the rows cleared.
+		 * game, which is called when the player clears one or more rows in a
+		 * turn.
 		 */
 
 		score: function (rows) {
@@ -71,6 +80,8 @@ define(function (require, exports, module) {
 				'score': score,
 				'combo': combo
 			})
+
+			this.trigger('score', score, combo);
 		}
 
 	})

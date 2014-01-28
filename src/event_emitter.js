@@ -4,12 +4,12 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
-	var EventEmitter = module.exports = Model.extend({
+	var EventEmitter = module.exports = function () {
+		this._events = {};
+	}
 
-		constructor: function () {
-			this._events = {};
-			Model.prototype.constructor.apply(this, arguments);
-		},
+
+	EventEmitter.prototype = {
 
 		on: function (event, callback) {
 			var events = this._events;
@@ -49,6 +49,6 @@ define(function (require, exports, module) {
 			}
 		}
 
-	})
+	}
 
 })

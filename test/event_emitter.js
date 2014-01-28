@@ -60,20 +60,6 @@ define(function (require) {
 			expect(count).to.equal(1);
 		})
 
-
-		it('should be extendable', function (done) {
-			var SubClass = EventEmitter.extend({
-				foo: function () {
-					this.trigger('foo');
-				}
-			})
-			var e = new SubClass();
-			e.on('foo', function () {
-				done();
-			})
-			e.foo();
-		})
-
 	})
 
 })

@@ -2,7 +2,6 @@ define(function (require, exports, module) {
 	'use strict';
 
 	var Clock = require('clock');
-	var EventEmitter = require('event_emitter');
 	var ScoreKeeper = require('score_keeper');
 	var TetriminoFactory = require('tetrimino_factory');
 	var TetrisControl = require('tetris_control');
@@ -17,6 +16,18 @@ define(function (require, exports, module) {
 	 * A matrix manages its own queue of Tetriminos and hold slots.
 	 * It exposes the API for moving pieces around.
 	 *
+	 * Events
+	 * ------
+	 * - All clock events
+	 * - clear
+	 * - lock
+	 * - move
+	 * - rotate
+	 * - update
+	 * - score (current score, multiplier): Triggered when the user scores
+	 * - restart: Triggered when the game is restarted
+	 * 
+	 *
 	 * Attributes
 	 * ----------
 	 * - matrix (Array): A 10 x 22 2D array of blocks on the board
@@ -29,18 +40,19 @@ define(function (require, exports, module) {
 
 		width: 10,
 		height: 22,
+		initialDelay: 300,
 
 
 		attributes: {
-			controler: null,    // Controler of the game
-			current: null,      // Current Tetrimino in play
-			delay: 300,         // Miliseconds before autodrop, inherited from Clock
-			dropLock: false,    // Prevents autodrop, enable with #.set
-			hold: null,         // Tetrimino on hold
-			matrix: null,       // Game area
-			queue: null,        // Queue of upcoming Tetriminos
-			score_keeper: null, // Keeps track of the score of this game
-			view: null          // View of this game
+			controler: null,     // Controler of the game
+			current: null,       // Current Tetrimino in play
+			delay: 300,          // Miliseconds before autodrop, inherited from Clock
+			dropLock: false,     // Prevents autodrop, enable with #.set
+			hold: null,          // Tetrimino on hold
+			matrix: null,        // Game area
+			queue: null,         // Queue of upcoming Tetriminos
+			score_keeper: null,  // Keeps track of the score of this game
+			view: null           // View of this game
 		},
 
 
@@ -53,14 +65,6 @@ define(function (require, exports, module) {
 		initialize: function () {
 			Clock.prototype.initialize.call(this);
 
-			var matrix = []
-			for (var row = 0; row < this.height; row++) {
-				matrix[row] = [];
-				for (var col = 0; col < this.width; col++) {
-					matrix[row][col] = null;
-				}
-			}
-
 			var queue = new TetriminoFactory({ bounds: this._bounds.bind(this) });
 			var view = new TetrisView({ game: this });
 			var controler = new TetrisControl({ game: this });
@@ -68,16 +72,27 @@ define(function (require, exports, module) {
 
 			this.set({
 				'controler': controler,
-				'matrix': matrix,
+				'delay': this.initialDelay,
+				'matrix': this._getEmptyMatrix(),
 				'queue': queue,
 				'score_keeper': score_keeper,
 				'view': view
 			})
 
+			// Pass the score event up from the score_keeper,
+			// also increase dificulty
+			score_keeper.on('score', function (score, multiplier) {
+				var newDelay = this.initialDelay * Math.pow(699/700, score);
+				this.set({'delay': newDelay});
+				this.trigger('score', score, multiplier);
+			}.bind(this));
+
+			// Autodrop
 			this.on('downtick', function () {
 				this.drop()
 			}.bind(this))
 
+			// Initialize the controler
 			controler.delegateEvents();
 
 			this.spawn();
@@ -258,6 +273,34 @@ define(function (require, exports, module) {
 
 
 		/**
+		 * Tetris.prototype.restart()
+		 * --------------------------
+		 * Restarts the game. The game will be in the "stopped" state.
+		 */
+
+		restart: function () {
+			var queue = new TetriminoFactory({ bounds: this._bounds.bind(this) });
+			var score_keeper = this.get('score_keeper');
+
+			score_keeper.set({
+				'combo': 0,
+				'dryspell': 0,
+				'score': 0
+			})
+
+			this.set({
+				'delay': this.initialDelay,
+				'matrix': this._getEmptyMatrix(),
+				'queue': queue
+			})
+			
+			this._stop();
+			this.spawn();
+			this.trigger('restart');
+		},
+
+
+		/**
 		 * Tetris.prototype.clearLines()
 		 * -----------------------------
 		 * Checks if any rows are full and clears them if so.
@@ -269,7 +312,9 @@ define(function (require, exports, module) {
 			var matrix = this.get('matrix');
 
 			this._clearLines(y, rows, matrix);
-			this.trigger('clear', rows);
+			if (rows.length > 0) {
+				this.trigger('clear', rows);
+			}
 			return;
 		},
 
@@ -302,6 +347,18 @@ define(function (require, exports, module) {
 		resetDropTime: function () {
 			Clock.prototype._stop.call(this);
 			Clock.prototype._start.call(this);
+		},
+
+
+		_getEmptyMatrix: function () {
+			var matrix = []
+			for (var row = 0; row < this.height; row++) {
+				matrix[row] = [];
+				for (var col = 0; col < this.width; col++) {
+					matrix[row][col] = null;
+				}
+			}
+			return matrix;
 		},
 
 

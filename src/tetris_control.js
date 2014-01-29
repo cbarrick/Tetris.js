@@ -63,7 +63,11 @@ define(function (require, exports, module) {
 				var document = this.get('document');
 				var scores = document.getElementsByClassName('score-value');
 				for (var i = scores.length - 1; i >= 0; i-- ) {
-					scores[i].innerHTML = score;
+					scores[i].innerHTML = '';
+					if (score < 1000) scores[i].innerHTML += '0';
+					if (score < 100) scores[i].innerHTML += '0';
+					if (score < 10) scores[i].innerHTML += '0';
+					scores[i].innerHTML += score;
 				}
 			}.bind(this))
 
@@ -75,7 +79,7 @@ define(function (require, exports, module) {
 				var document = this.get('document');
 				var scores = document.getElementsByClassName('score-value');
 				for (var i = scores.length - 1; i >= 0; i-- ) {
-					scores[i].innerHTML = 0;
+					scores[i].innerHTML = '0000';
 				}
 			}.bind(this));
 		},

@@ -178,6 +178,9 @@ define(function (require, exports, module) {
 		},
 
 
+		// Helper methods
+		// --------------
+		
 		// Returns false if the Tetrimino cannot be positioned at the given
 		// coordinates with the given box. Uses the public `bounds` attribute
 		// function to do the actuall bounds checking.

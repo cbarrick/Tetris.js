@@ -70,6 +70,9 @@ define(function (require, exports, module) {
 		},
 
 
+		// Helper methods
+		// --------------
+		
 		// Creates a permutation of the 7 Tetrimino types
 
 		_makeQueue: function () {

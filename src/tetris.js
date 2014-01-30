@@ -368,6 +368,9 @@ define(function (require, exports, module) {
 		},
 
 
+		// Helper methods
+		// --------------
+
 		// The bounding funciton given to the Tetriminos
 
 		_bounds: function (coordinates) {

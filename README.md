@@ -14,23 +14,23 @@ Source layout
 -------------
 The source has a very standard layout. Part of the requirement was that we use no 3rd party libraries. However, I used [Require.js] for the ability to modularize my code into separate files and [Mocha] and [Chai] for unit testing. None of these effected the source logic itself.
 
-├── LICENSE
-├── README.md
-├── index.xhtml
-├── main.js
-├── assets
-│   └── { Assets needed by the XHTML page }
-├── docs
-│   └── { Generated documentation }
-├── lib
-│   └── { Dev tools needed at runtime and/or compile time }
-├── src
-│   └── { The source logic for the game }
-└── test
-    ├── lib
-    │   └── { Dev tools needed at testtime }
+    ├── LICENSE
+    ├── README.md
     ├── index.xhtml
-    └── { The unit tests for the lower level classes }
+    ├── main.js
+    ├── assets
+    │   └── { Assets needed by the XHTML page }
+    ├── docs
+    │   └── { Generated documentation }
+    ├── lib
+    │   └── { Dev tools needed at runtime and/or compile time }
+    ├── src
+    │   └── { The source logic for the game }
+    └── test
+        ├── lib
+        │   └── { Dev tools needed at testtime }
+        ├── index.xhtml
+        └── { The unit tests for the lower level classes }
 
 
 Credits

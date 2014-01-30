@@ -72,8 +72,10 @@ define(function (require, exports, module) {
 		start: function () {
 			var state = this.get('state');
 			if (state === 'stopped') {
+				this.set('state', 'running');
 				this.trigger('start', this.toJson());
 			} else if (state === 'paused') {
+				this.set('state', 'running');
 				this.trigger('resume', this.toJson());
 			}
 			this._start();

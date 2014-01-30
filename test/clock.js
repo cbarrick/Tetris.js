@@ -19,6 +19,7 @@ define(function (require) {
 					} else {
 						hasBeenRestarted = true;
 						c.restart();
+						c.start();
 					}
 				}
 			})

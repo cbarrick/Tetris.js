@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+	<head>
+		<meta charset="UTF-8"/>
+
+		<title>Tetris</title>
+
+		<script src="lib/require/require.js" data-main="main"
+			type="application/javascript"
+			defer="defer">
+		</script>
+
+		<style type="text/css">
+			/*<![CDATA[*/
+
+			/* Downloads
+ 			***************/
+			@import url(http://fonts.googleapis.com/css?family=Quicksand:300,400,700);
+
+
+			/* Reset
+			 ***************/
+			* {
+				margin: 0;
+				padding: 0;
+				-webkit-box-sizing: border-box;
+				   -moz-box-sizing: border-box;
+				    -ms-box-sizing: border-box;
+				     -o-box-sizing: border-box;
+				        box-sizing: border-box;
+			}
+			html {
+				height: 100%;
+			}
+			body {
+				height: 100%;
+				min-height: 100%;
+			}
+
+			/* Global
+			 ***************/
+			body {
+				min-width: 650px;
+				color: hsl(355,0%,40%);
+				font-family: "Quicksand", "Open Sans", sans-serif;
+				font-size: 16px;
+				/*background-image: url("../assets/escheresque_ste.png");*/
+				background-repeat: repeat;
+			}
+			a {
+				color: inherit;
+				transition: color 0.2s;
+				text-decoration: none;
+			}
+			a:hover {
+				color: hsl(355,60%,50%);
+			}
+			button {
+				width: 100px;
+				padding: 10px;
+				margin: 10px;
+				color: inherit;
+				background: hsl(0,0%,19%);
+				border: 3px solid white;
+				border-radius: 10px;
+			}
+			button:hover {
+				color: hsl(0,0%,19%);
+				background: white;
+			}
+			button:active {
+				color: white;
+				background: hsl(0,0%,19%);
+			}
+			em {
+				color: hsl(355,60%,50%);
+			}
+			blockquote > cite {
+				display: block;
+				text-align: right;
+			}
+			h1, h2 {
+				font-weight: normal;
+			}
+
+			/* Header & Footer
+			 ***************/
+			header {
+				position: relative;
+				width: 100%;
+				min-width: inherit;
+				padding: 5px;
+				font-size: 24px;
+				z-index: 1;
+
+				/* The h1 is the tallest thing in the header. The default
+				 * h1 font-size is 2em. Since we've set the font-size here to
+				 * 24px, that makes the height here 48px. We don't explicitly
+				 * set it for max flexibility */
+				/* height: 48px; */
+			}
+			header h1, header h2 {
+				display: inline-block;
+				z-index: 1;
+				font-weight: 300;
+			}
+			header h1 {
+				color: hsl(355,60%,50%);
+			}
+			header h2 {
+				font-size: 1em;
+				margin: 0 25px; 
+			}
+			header address {
+				display: inline;
+			}
+			footer {
+				width: 75%;
+				width: -webkit-fit-content;
+				width:    -moz-fit-content;
+				width:     -ms-fit-content;
+				width:      -o-fit-content;
+				width:         fit-content;
+				margin: auto;
+				padding-bottom: 150px;
+			}
+			footer a {
+			 	color: hsl(355,60%,50%);
+			 }
+
+			/* Images
+			 ***************/
+			 #gallery {
+			 	font-size: 100px;
+			 }
+			 #gallery h1 {
+			 	font-size: 2em;
+			 	color: hsl(355,60%,50%);
+			 }
+			 #gallery h2 {
+			 	font-size: 1.5em;
+			 	margin-top: 50px;
+			 }
+			.images {
+				max-width: 75%;
+				margin: 100px auto;
+			}
+			.images img {
+				max-width: 100%;
+			}
+
+			/*]]>*/
+		</style>
+
+	</head>
+
+	<body>
+		<header>
+			<h1><a href="http://cbarrick.github.io/Tetris.js/">Tetris.js</a></h1>
+			<h2>an experiment by <a href="https://github.com/cbarrick"><address>Chris Barrick</address></a></h2>
+		</header>
+
+		<section id="gallery">
+			<article class="images">
+				<h1>Intro</h1>
+				<h2>Start screen</h2>
+				<img src="Intro.tiff" />
+				<h2>Instructions</h2>
+				<img src="Instructions.tiff" />
+			</article>
+			<article class="images">
+				<h1>Gameplay</h1>
+				<h2>In game</h2>
+				<img src="Gameplay.tiff" />
+				<h2>Pause screen</h2>
+				<img src="Pause.tiff" />
+				<h2>Game over</h2>
+				<img src="Game Over.tiff" />
+			</article>
+		</section>
+
+		<footer>
+			<p>Play the game at <a href="http://cbarrick.github.io/Tetris.js/">cbarrick.github.io/Tetris.js</a></p>
+		</footer>
+	</body>
+
+</html>

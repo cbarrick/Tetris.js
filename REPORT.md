@@ -13,3 +13,18 @@ The logic for calculating the score is somewhat complex, but basically the more 
 The user documentation is in-game :) Instructions are given when you start it up.
 
 For the gallery, checkout http://cbarrick.github.io/Tetris.js/gallery/
+
+
+Grading
+-------
+I should get a 100 :)
+
+Definition of game objects: 10 points - Everything is object oriented
+Animation: 20 points - It animates, Tetris style. Simple, but again it's Tetris.
+Interaction between objects: 20 points - "Edge detection" happens between game blocks, lines get cleared, and its very interactive from a player standpoint.
+Keeping score: 10 points - The socring is outlined above.
+Complexity: 20 points - 2000+ lines of code. *Very* polished. I created an underlying classical oop system on top of Javascript's prototype system. All objects are also event emitters and the code is engineered with an MVC + Events pattern, a lot like the Backbone.js library used throughout the web industry.
+Documentation: - 15 points. The API is fully documented, and I generated annotated source code docs. Very professional.
+Demo: - 5 points. http://cbarrick.github.io/Tetris.js/
+
+Total: 100 :)

@@ -34,6 +34,11 @@ The source has a very standard layout. Part of the requirement was that we use n
         └── { The unit tests for the lower level classes }
 
 
+Unit Testing
+------------
+Unit tests are written with [Mocha] and [Chai]. To run them, open `test/index.xhtml` in a browser.
+
+
 Credits
 -------
 - Lead developer: [Chris Barrick](https://github.com/cbarrick)

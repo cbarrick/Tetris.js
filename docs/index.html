@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Tetris.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="REPORT.html">
+                REPORT.md
+              </a>
+            
+              
+              <a class="source" href="clock.html">
+                clock.js
+              </a>
+            
+              
+              <a class="source" href="event_emitter.html">
+                event_emitter.js
+              </a>
+            
+              
+              <a class="source" href="model.html">
+                model.js
+              </a>
+            
+              
+              <a class="source" href="score_keeper.html">
+                score_keeper.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino.html">
+                tetrimino.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino_factory.html">
+                tetrimino_factory.js
+              </a>
+            
+              
+              <a class="source" href="tetris.html">
+                tetris.js
+              </a>
+            
+              
+              <a class="source" href="tetris_control.html">
+                tetris_control.js
+              </a>
+            
+              
+              <a class="source" href="tetris_view.html">
+                tetris_view.js
+              </a>
+            
+              
+              <a class="source" href="util.html">
+                util.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="tetris-js">Tetris.js</h1>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>A Tetris clone for HTML5. Right now this only works in Safari and Chrome, but it will be simple to update to work in Firefox and IE 10.</p>
+<p>I had to write this report very quickly. I apologize for the terseness, but I believe you will be very pleased with the game.</p>
+<p>The game is Tetris. The goal is to stack blocks. When you fill a row completely with blocks, it disapears, and all rows above it fall. When the stack of blocks reaches the top of the screen, the game is over. Scoring is calculated in terms of how many lines you clear and if you clear lines multiple turns in succession. The goal is to score the most points :)</p>
+<p>The main graphical objects are &quot;blocks&quot;. The player controls 4 blocks at once called a &quot;Tetrimino&quot;. All of the drawing logic is in <code>src/tetris_view.js</code>. Particularly the <code>drawBlock</code> and <code>clearArea</code> methods. The drawing is very simple. I just draw a path then fill it and stroke it to draw each block. Scoring is pretty cool. The state of the game is handled by the <code>Tetris</code> class in <code>src/tetris.js</code>. The class emits an events when an area of the board is updated. The <code>TetrisView</code> listens to this event and redraws the area that has updated.</p>
+<p>The logic for calculating the score is somewhat complex, but basically the more lines you clear at once, the more points you get. And the more turns in a row that you score, the more points you get. Checkout <code>src/score_keeper.js</code> for scoring details.</p>
+<p>The user documentation is in-game :) Instructions are given when you start it up.</p>
+<p>For the gallery, checkout <a href="http://cbarrick.github.io/Tetris.js/gallery/">http://cbarrick.github.io/Tetris.js/gallery/</a></p>
+
+            </div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

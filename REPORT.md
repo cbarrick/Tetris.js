@@ -23,7 +23,7 @@ I should get a 100 :)
 2. Animation: 20 points - It animates, Tetris style. Simple, but again it's Tetris.
 3. Interaction between objects: 20 points - "Edge detection" happens between game blocks, lines get cleared, and its very interactive from a player standpoint.
 4. Keeping score: 10 points - The socring is outlined above.
-5. Complexity: 20 points - 2000+ lines of code. *Very* polished. I created an underlying classical oop system on top of Javascript's prototype system. All objects are also event emitters and the code is engineered with an MVC + Events pattern, a lot like the Backbone.js library used throughout the web industry.
+5. Complexity: 20 points - 2000+ lines of code. *Very* polished. I created an underlying classical oop system on top of Javascript's prototype system. All objects are also event emitters and the code is engineered with an MVC + Events pattern, a lot like the Backbone.js library. It supports a lot of complex Tetris features including wall-kicks, T-spins, Tetrimino holding, and the ghost piece. Plus a lot of overall HTML5 and CSS3 polish.
 6. Documentation: - 15 points. The API is fully documented, and I generated annotated source code docs. Very professional.
 7. Demo: - 5 points. http://cbarrick.github.io/Tetris.js/
 

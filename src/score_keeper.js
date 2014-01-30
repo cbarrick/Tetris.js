@@ -1,20 +1,18 @@
-/*
- * Tetris.js - A Tetris clone for HTML5
- * Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+//     Tetris.js - A Tetris clone for HTML5
+//     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
+//     
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//     
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+//     
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 define(function (require, exports, module) {
@@ -23,14 +21,21 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
-	/**
-	 * ScoreKeeper
-	 * ===========
-	 *
-	 * Events
-	 * ------
-	 * - score (current score, multiplier): Triggers when a score is calculated 
-	 */
+	// A class for managing the score. Extends `Model`.
+	//
+	// Note that you should set the `game` attribute on construction and that
+	// `dryspell` alternates between -1 and 0 during a combo.
+	//
+	// Attributes
+	// ----------
+	// - `combo` (Number): The number of plays in a row that have cleared.
+	// - `dryspell` (Number): The complement of `combo`.
+	// - `game` (Tetris): The game being scored.
+	// - `score` (Number): Duh.
+	//
+	// Events
+	// ------
+	// - `score` (current score, combo): Triggers when a score is calculated.
 
 	var ScoreKeeper = module.exports = Model.extend({
 
@@ -41,12 +46,6 @@ define(function (require, exports, module) {
 			score: 0
 		},
 
-
-		/**
-		 * var sk = new ScoreKeeper(attributes)
-		 * --------------------------------------
-		 * You should set the `game` attribute on construction
-		 */
 
 		initialize: function () {
 			var game = this.get('game');
@@ -59,16 +58,16 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * ScoreKeeper.prorotype.score(rows)
-		 * ---------------------------------
-		 * Adds to the score based on the number of elements in the array
-		 * argument, `rows`.
-		 *
-		 * This method is registered as a handler for the `clear` event of the
-		 * game, which is called when the player clears one or more rows in a
-		 * turn.
-		 */
+		// sk.score(rows)
+		// --------------
+		// Adds to the score based on the number of rows cleared.
+		//
+		// This method is registered as a handler for the `clear` event of the
+		// game, which is called when the player clears one or more rows in a
+		// turn.
+		//
+		// ### Params
+		// - `rows` (Array of Integers): The indicies of the rows cleared.
 
 		score: function (rows) {
 			var dryspell = this.get('dryspell');

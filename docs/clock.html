@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>clock.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="clock.html">
+                clock.js
+              </a>
+            
+              
+              <a class="source" href="event_emitter.html">
+                event_emitter.js
+              </a>
+            
+              
+              <a class="source" href="model.html">
+                model.js
+              </a>
+            
+              
+              <a class="source" href="score_keeper.html">
+                score_keeper.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino.html">
+                tetrimino.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino_factory.html">
+                tetrimino_factory.js
+              </a>
+            
+              
+              <a class="source" href="tetris.html">
+                tetris.js
+              </a>
+            
+              
+              <a class="source" href="tetris_control.html">
+                tetris_control.js
+              </a>
+            
+              
+              <a class="source" href="tetris_view.html">
+                tetris_view.js
+              </a>
+            
+              
+              <a class="source" href="util.html">
+                util.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>clock.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <pre><code>Tetris.js - A Tetris clone for HTML5
+Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+<span class="hljs-pi">	'use strict'</span>;
+
+	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>A simple, evented interval loop. Extends <code>Model</code>.</p>
+<p>A Clock &quot;ticks&quot; repeatedly until it is stopped, paused, or reaches a
+maximum number of ticks.</p>
+<h2 id="attributes">Attributes</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <ul>
+<li><code>state</code> (String): One of &quot;running&quot;, &quot;paused&quot;, or &quot;stopped&quot;.</li>
+<li><code>delay</code> (Number): Miliseconds between ticks.</li>
+<li><code>ticks</code> (Number): Count of ticks in this clock&#39;s lifetime.</li>
+<li><code>maxTicks</code> (Number): The maximum number of ticks before the clock
+stops.</li>
+</ul>
+<h2 id="events">Events</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <ul>
+<li><code>start</code> (state): Just before the clock starts after being stopped</li>
+<li><code>stop</code> (state): When the clock is stopped</li>
+<li><code>restart</code> (state): When the clock has been restarted</li>
+<li><code>pause</code> (state): When the clock is paused</li>
+<li><code>resume</code> (state): When the clock is resumed from pause</li>
+<li><code>uptick</code> (state): When a tick starts</li>
+<li><code>downtick</code> (state): when a tick ends</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> Clock = module.exports = Model.extend({
+
+		attributes: {
+			state: <span class="hljs-string">'stopped'</span>,
+			delay: <span class="hljs-number">0</span>,
+			ticks: <span class="hljs-number">0</span>,
+			maxTicks: <span class="hljs-literal">Infinity</span>,
+			_intervalId: <span class="hljs-literal">null</span>
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="new-clock-attributes-">new Clock([attributes])</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>When creating a clock instance, you can pass in the initial
+attributes, which will be set on the new clock.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		initialize: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+			Model.prototype.initialize.call(<span class="hljs-keyword">this</span>);
+			<span class="hljs-keyword">this</span>.on(<span class="hljs-string">'change:delay'</span>, <span class="hljs-keyword">this</span>._onChangeDelay.bind(<span class="hljs-keyword">this</span>));
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h2 id="c-start-">c.start()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Starts the clock.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		start: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> state = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">if</span> (state === <span class="hljs-string">'stopped'</span>) {
+				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'start'</span>, <span class="hljs-keyword">this</span>.toJson());
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (state === <span class="hljs-string">'paused'</span>) {
+				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'resume'</span>, <span class="hljs-keyword">this</span>.toJson());
+			}
+			<span class="hljs-keyword">this</span>._start();
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h2 id="c-restart-">c.restart()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Stops the clock if it is not already, resets the ticks count to 0,
+and starts the clock.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		restart: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> state = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">if</span> (state !== <span class="hljs-string">'stopped'</span>) <span class="hljs-keyword">this</span>.stop();
+			<span class="hljs-keyword">this</span>.set({<span class="hljs-string">'ticks'</span>: <span class="hljs-number">0</span>});
+			<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'restart'</span>, <span class="hljs-keyword">this</span>.toJson());
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h2 id="c-stop-">c.stop()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Stops the clock.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		stop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">this</span>._stop();
+			<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'stop'</span>, <span class="hljs-keyword">this</span>.toJson());
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h2 id="c-pause-">c.pause()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Pauses the clock if it is running.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		pause: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> state = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">if</span> (state == <span class="hljs-string">'running'</span>) {
+				<span class="hljs-keyword">this</span>._stop();
+				<span class="hljs-keyword">this</span>.set({<span class="hljs-string">'state'</span>: <span class="hljs-string">'paused'</span>});
+				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'pause'</span>, <span class="hljs-keyword">this</span>.toJson());
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <h2 id="helper-methods">Helper Methods</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Starts the clock</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		_start: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> delay = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'delay'</span>);
+			<span class="hljs-keyword">var</span> intervalId = setInterval(<span class="hljs-keyword">this</span>._tick.bind(<span class="hljs-keyword">this</span>), delay);
+			<span class="hljs-keyword">this</span>.set({
+				<span class="hljs-string">'_intervalId'</span>: intervalId,
+				<span class="hljs-string">'state'</span>: <span class="hljs-string">'running'</span>
+			})
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Stops the clock</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		_stop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> intervalId = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'_intervalId'</span>);
+			clearInterval(intervalId);
+			<span class="hljs-keyword">this</span>.set({
+				<span class="hljs-string">'_intervalId'</span>: <span class="hljs-literal">null</span>,
+				<span class="hljs-string">'state'</span>: <span class="hljs-string">'stopped'</span>
+			})
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Each tick of the clock</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		_tick: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> tickCount = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'ticks'</span>);
+			<span class="hljs-keyword">var</span> maxTicks = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'maxTicks'</span>);
+
+			<span class="hljs-keyword">if</span> (tickCount &lt; maxTicks) {
+				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'uptick'</span>, <span class="hljs-keyword">this</span>.toJson());
+				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'downtick'</span>, <span class="hljs-keyword">this</span>.toJson());
+				<span class="hljs-keyword">this</span>.set({<span class="hljs-string">'ticks'</span>: ++tickCount});
+			} <span class="hljs-keyword">else</span> {
+				<span class="hljs-keyword">this</span>.stop();
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Registered for the <code>change:delay</code> event.
+Changes the clock to the new delay even if it&#39;s already running.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		_onChangeDelay: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(newdelay)</span> {</span>
+			<span class="hljs-keyword">var</span> state = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">if</span> (state == <span class="hljs-string">'running'</span>) {
+				<span class="hljs-keyword">this</span>._stop();
+				<span class="hljs-keyword">this</span>._start();
+			}
+		}
+
+	})
+
+
+})</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

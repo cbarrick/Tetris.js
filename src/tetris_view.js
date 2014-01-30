@@ -1,20 +1,18 @@
-/*
- * Tetris.js - A Tetris clone for HTML5
- * Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+//     Tetris.js - A Tetris clone for HTML5
+//     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
+//     
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//     
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+//     
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 define(function (require, exports, module) {
@@ -23,6 +21,20 @@ define(function (require, exports, module) {
 	var Model = require('model');
 	var util = require('util');
 
+
+	// Canvas logic for drawing a game of Tetris. Extends `Model`.
+	//
+	// Attributes
+	// ----------
+	// - `el` (HTTPCanvasElement): The canvas element to which is drawn.
+	// - `pen` (CanvasRenderingContext2D): The canvas context to use for drawing.
+	// - `roundness` (Number): A value used to determine how round to draw the
+	//   blocks of the Tetriminos.
+	//   0 = Square, 1 = Circle, 2 looks cool too.
+	// - `padding` (Number): A value used to calculate the padding size.
+	//   0 = No padding, 1 = Max padding.
+	// - `border` (Number): A value used to calculate the border width.
+	//   0 = No border, 1 = Max border.
 
 	var TetrisView = module.exports = Model.extend({
 
@@ -38,12 +50,6 @@ define(function (require, exports, module) {
 			'border': 0.3     // Width of block border as a percent; 1 = max
 		},
 
-
-		/**
-		 * var tv = new TetrisView(attributes)
-		 * -----------------------------------
-		 * You should set the `game` attribute on construction
-		 */
 
 		initialize: function () {
 			var el = document.createElement('canvas');
@@ -65,9 +71,13 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// TetrisView.prototype.attach(parent)
+		// -----------------------------------
+		// A convenience method to append the canvas as a child of a parent
+		// DOM node.
+		//
+		// ### Params
+		// - `parent` (DOM Node): The element under which to attach the canvas.
 
 		attach: function (parent) {
 			var canvas = this.get('el');
@@ -75,12 +85,14 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * TetrisView.prototype.render(x, y, width, height)
-		 * ------------------------------------------------
-		 * Renders the current state of the game for the region specified.
-		 * The units are in terms of game "blocks", not pixles.
-		 */
+		// TetrisView.prototype.render([x, [y, [width, [height]]]])
+		// --------------------------------------------------------
+		// Renders the current state of the game for the region specified.
+		// The units are in terms of game "blocks", not pixles.
+		//
+		// ### Params
+		// - The arguments are the bounding box of the the area to draw in
+		//   game units. They default to drawing the whole board.
 
 		render: function (x, y, width, height) {
 			var game = this.get('game');
@@ -109,11 +121,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * TetrisView.prototype.drawCurrent()
-		 * ----------------------------------
-		 * Draws the current Tetrimino in play.
-		 */
+		// TetrisView.prototype.drawCurrent()
+		// ----------------------------------
+		// Draws the current Tetrimino in play.
 
 		drawCurrent: function () {
 			var game = this.get('game');
@@ -137,11 +147,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * TetrisView.prototype.drawGhost()
-		 * --------------------------------
-		 * Draws the ghost piece
-		 */
+		// TetrisView.prototype.drawGhost()
+		// --------------------------------
+		// Draws the ghost piece.
 
 		drawGhost: function () {
 			var game = this.get('game');
@@ -167,11 +175,14 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * TetrisView.prototype.drawBlock(x, y, fillStyle)
-		 * -----------------------------------------------
-		 * Draws a block at an arbitrary coordinate with the given fillStyle
-		 */
+		// TetrisView.prototype.drawBlock(x, y, fillStyle)
+		// -----------------------------------------------
+		// Draws a block at an arbitrary coordinate with the given fillStyle.
+		//
+		// ### Params
+		// - `x` (Number): The x coordinate of the block in game units.
+		// - `y` (Number): The y coordinate of the block in game units.
+		// - `fillstyle` (String): The fill style to use for the center of the block.
 
 		drawBlock: function (x, y, fillStyle) {
 			var scale = this.detail;
@@ -224,9 +235,13 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// TetrisView.prototype.render([x, [y, [width, [height]]]])
+		// --------------------------------------------------------
+		// Clears the area of the canvas in terms of game units.
+		//
+		// ### Params
+		// - The arguments are the bounding box of the the area to draw in
+		//   game units. They default to drawing the whole board.
 
 		clearArea: function (x, y, width, height) {
 			var pen = this.get('pen');
@@ -236,39 +251,6 @@ define(function (require, exports, module) {
 			y -= 2;
 
 			pen.clearRect(x * scale - 1, y * scale - 1, width * scale + 2, height * scale + 2);
-		},
-
-
-		_blur: function () {
-			var detail = this.detail;
-			var el = this.get('el');
-			var pen = this.get('pen');
-			var width = el.width;
-			var height = el.height;
-
-			var source = pen.getImageData(0, 0, width, height);
-			var dest = pen.createImageData(source);
-			var radius = Math.floor(detail / 5);
-
-			var pixle;
-			var total;
-
-			for (var i = 0; i < dest.data.length; i++) {
-				total = [
-					0, // Red totals
-					0, // Green totals
-					0, // Blue totals
-					0  // Alpha totals
-				]
-				for (var j = -radius; j <= radius; ++j) {
-					if (i + (j * 4) > 0 && i + (j * 4) < dest.data.length) {
-						total[i % 4] += source.data[i + (j * 4)];
-					}
-				}
-				dest.data[i] = total[i % 4] / (radius * 2 + 1);
-			}
-
-			pen.putImageData(dest, 0, 0);
 		}
 	})
 })

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>tetrimino.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="clock.html">
+                clock.js
+              </a>
+            
+              
+              <a class="source" href="event_emitter.html">
+                event_emitter.js
+              </a>
+            
+              
+              <a class="source" href="model.html">
+                model.js
+              </a>
+            
+              
+              <a class="source" href="score_keeper.html">
+                score_keeper.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino.html">
+                tetrimino.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino_factory.html">
+                tetrimino_factory.js
+              </a>
+            
+              
+              <a class="source" href="tetris.html">
+                tetris.js
+              </a>
+            
+              
+              <a class="source" href="tetris_control.html">
+                tetris_control.js
+              </a>
+            
+              
+              <a class="source" href="tetris_view.html">
+                tetris_view.js
+              </a>
+            
+              
+              <a class="source" href="util.html">
+                util.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>tetrimino.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <pre><code>Tetris.js - A Tetris clone for HTML5
+Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+<span class="hljs-pi">	'use strict'</span>;
+
+	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>The playing piece in a game of tetris.
+A collection of 4 adjacent blocks in 2D space.</p>
+<p>There are 7 unique shapes of Tetrimino, named by the letters they look
+most similar to: S, Z, J, L, I, O, and T. Each Tetrimino consists of
+the 4 Blocks arranged in a 4x4 grid. And each shape other than the O
+has 4 unique orientations. An X and Y coordinate may be applied to the
+Tetrimino, and a coordinate pair for each Block can be calculated as an
+offset relative to the Tetrimino.</p>
+<h2 id="attributes">Attributes</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <ul>
+<li><code>x</code> (Number): The X coordinate, right is positive.</li>
+<li><code>y</code> (Number): The Y coordinate, down is positive.</li>
+<li><code>state</code> (Number): The rotation state.</li>
+<li><code>type</code> (String): The name of this Tetrimino&#39;s shape.</li>
+<li><code>bounds</code> (Function Array -&gt; Boolean): A function representing the
+bounds on the Tetrimino&#39;s movement. It gets passed an array of 4
+coordinate pairs of the form [x,y] that represent the coordinates
+the tetrimino requires. It should return <code>false</code> if any of the
+coordinates are bad.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> Tetrimino = module.exports = Model.extend({
+
+		attributes: {
+			type: <span class="hljs-string">'T'</span>,
+			bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>},
+			offsets: [</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p>Common offsets for J, L, S, Z, and T</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>				[[ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]],
+				[[ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [+<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [+<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,+<span class="hljs-number">2</span>], [+<span class="hljs-number">1</span>,+<span class="hljs-number">2</span>]],
+				[[ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]],
+				[[ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,+<span class="hljs-number">2</span>], [-<span class="hljs-number">1</span>,+<span class="hljs-number">2</span>]]
+			]
+		},
+
+
+		initialize: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> type = Tetrimino.types[<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'type'</span>)];
+			<span class="hljs-keyword">this</span>.set(type);
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="t-rotate-">t.rotate()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Rotates the piece clockwise, following the Super Rotation System
+algorithm. The normal rotation and 4 differents wall kicks are
+attempted. If none work, the piece is left as-is.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		rotate: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(count)</span> {</span>
+			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
+			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
+			<span class="hljs-keyword">var</span> dx;
+			<span class="hljs-keyword">var</span> dy;
+			<span class="hljs-keyword">var</span> offsets = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'offsets'</span>);
+			<span class="hljs-keyword">var</span> oldState = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">var</span> newState = (oldState + <span class="hljs-number">1</span>) % <span class="hljs-number">4</span>;
+			<span class="hljs-keyword">var</span> oldBox = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>);
+			<span class="hljs-keyword">var</span> newBox = [];</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Rotate</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; oldBox.length; row++) {
+				newBox[row] = [];
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; oldBox[row].length; col++) {
+					newBox[row][col] = oldBox[oldBox.length - col - <span class="hljs-number">1</span>][row];
+				}
+			}</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Apply the offsets</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; <span class="hljs-number">5</span>; col++) {
+				dx = offsets[oldState][col][<span class="hljs-number">0</span>] - offsets[newState][col][<span class="hljs-number">0</span>];
+				dy = offsets[oldState][col][<span class="hljs-number">1</span>] - offsets[newState][col][<span class="hljs-number">1</span>];
+
+				<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._inBounds(newBox, x+dx, y+dy)) {
+					<span class="hljs-keyword">this</span>.set({
+						box: newBox,
+						state: newState,
+						x: x+dx,
+						y: y+dy
+					})
+					<span class="hljs-keyword">return</span>;
+				}
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h2 id="t-move-dx-dy-">t.move(dx, dy)</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Attempts to move the Tetrimino. Returns an object providing the
+new position.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li><code>dx</code> (Number): The change in x.</li>
+<li><code>dy</code> (Number): The change in y.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		move: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(dx, dy)</span> {</span>
+			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
+			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
+			<span class="hljs-keyword">var</span> box = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>)
+
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._inBounds(box, x+dx, y+dy)) {
+				<span class="hljs-keyword">this</span>.set({
+					x: x + dx,
+					y: y + dy
+				})
+				x += dx;
+				y += dy;
+			}
+
+			<span class="hljs-keyword">return</span> { <span class="hljs-string">'x'</span>: x, <span class="hljs-string">'y'</span>: y }
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h2 id="t-drop-">t.drop()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Moves the tetrimino as far down as it can go</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		drop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
+			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
+
+			<span class="hljs-keyword">var</span> newpos = <span class="hljs-keyword">this</span>.move(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
+
+			<span class="hljs-keyword">if</span> (y === newpos.y) <span class="hljs-keyword">return</span> newpos;
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.drop();
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h2 id="t-getcoordinates-">t.getCoordinates()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Returns an array of [x, y] coordinate pairs (arrays) for each
+block of the tetrimino.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		getCoordinates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> box = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>);
+			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
+			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
+			<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._getCoordinates(box, x, y);
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Returns a list of (x, y) coordinate pairs for each &quot;block&quot; in the
+given &quot;box&quot; offset by the given coordinates.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		_getCoordinates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(box, x, y)</span> {</span>
+			<span class="hljs-keyword">var</span> coords = [];
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> dy = <span class="hljs-number">0</span>; dy &lt; box.length; dy++) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> dx = <span class="hljs-number">0</span>; dx &lt; box[dy].length; dx++) {
+					<span class="hljs-keyword">if</span> (box[dy][dx] !== <span class="hljs-literal">null</span>) {
+						coords.push([x+dx, y+dy]);
+					}
+				}
+			}
+			<span class="hljs-keyword">return</span> coords;
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Returns false if the Tetrimino cannot be positioned at the given
+coordinates with the given box. Uses the public <code>bounds</code> attribute
+function to do the actuall bounds checking.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		_inBounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(box, x, y)</span> {</span>
+			<span class="hljs-keyword">var</span> bounds = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'bounds'</span>);
+			<span class="hljs-keyword">var</span> ret = bounds(<span class="hljs-keyword">this</span>._getCoordinates(box, x, y));
+			<span class="hljs-keyword">return</span> ret;
+		},
+
+
+		toString: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(showBox)</span> {</span>
+			<span class="hljs-keyword">var</span> box = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>);
+			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
+			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
+			<span class="hljs-keyword">var</span> state = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">var</span> type = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'type'</span>);
+			<span class="hljs-keyword">var</span> str = <span class="hljs-string">"[Tetrimino: "</span> + type + <span class="hljs-string">' ('</span> + x + <span class="hljs-string">','</span> + y + <span class="hljs-string">') '</span> + state + <span class="hljs-string">']'</span>
+
+			<span class="hljs-keyword">if</span> (showBox) {
+				str += <span class="hljs-string">'\n+'</span>;
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; box[<span class="hljs-number">0</span>].length; i++) str += <span class="hljs-string">'-'</span>;
+				str += <span class="hljs-string">'+'</span>
+
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; box.length; i++) {
+					str += <span class="hljs-string">"\n|"</span>;
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; box[i].length; j++) {
+						<span class="hljs-keyword">if</span> (box[i][j] == <span class="hljs-string">'x'</span>) str += <span class="hljs-string">'X'</span>;
+						<span class="hljs-keyword">else</span> str += <span class="hljs-string">' '</span>;
+					}
+					str += <span class="hljs-string">'|'</span>;
+				}
+
+				str += <span class="hljs-string">'\n+'</span>;
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; box[<span class="hljs-number">0</span>].length; i++) str += <span class="hljs-string">'-'</span>;
+				str += <span class="hljs-string">'+'</span>;
+			}
+
+			<span class="hljs-keyword">return</span> str;
+		}
+	})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Default attributes for specific Tetrimino types</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	Tetrimino.types = {
+		J: {
+			x: <span class="hljs-number">3</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">3</span>,
+			height: <span class="hljs-number">3</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-string">'x'</span>,  <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>],
+				[<span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			color: <span class="hljs-string">'Blue'</span>
+		},
+		L: {
+			x: <span class="hljs-number">3</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">3</span>,
+			height: <span class="hljs-number">3</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>],
+				[<span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			color: <span class="hljs-string">'Orange'</span>
+		},
+		S: {
+			x: <span class="hljs-number">3</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">3</span>,
+			height: <span class="hljs-number">3</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-literal">null</span>],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			color: <span class="hljs-string">'Lime'</span>
+		},
+		Z: {
+			x: <span class="hljs-number">3</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">3</span>,
+			height: <span class="hljs-number">3</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-literal">null</span>],
+				[<span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			color: <span class="hljs-string">'Red'</span>
+		},
+		T: {
+			x: <span class="hljs-number">3</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">3</span>,
+			height: <span class="hljs-number">3</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>,  <span class="hljs-literal">null</span>],
+				[<span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			color: <span class="hljs-string">'DarkMagenta'</span>
+		},
+		O: {
+			x: <span class="hljs-number">3</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">3</span>,
+			height: <span class="hljs-number">3</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			offsets: [
+				[[ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>]],
+				[[ <span class="hljs-number">0</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,-<span class="hljs-number">1</span>]],
+				[[-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>], [-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>], [-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>], [-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>], [-<span class="hljs-number">1</span>,-<span class="hljs-number">1</span>]],
+				[[-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>]]
+			],
+			color: <span class="hljs-string">'Yellow'</span>
+		},
+		I: {
+			x: <span class="hljs-number">2</span>,
+			y: <span class="hljs-number">0</span>,
+			width: <span class="hljs-number">5</span>,
+			height: <span class="hljs-number">5</span>,
+			state: <span class="hljs-number">0</span>,
+			box: [
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>],
+				[<span class="hljs-literal">null</span>, <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span>,  <span class="hljs-string">'x'</span> ],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>],
+				[<span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>, <span class="hljs-literal">null</span>]
+			],
+			offsets: [
+				[[ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [+<span class="hljs-number">2</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [+<span class="hljs-number">2</span>, <span class="hljs-number">0</span>]],
+				[[-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>, <span class="hljs-number">0</span>], [ <span class="hljs-number">0</span>,+<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,-<span class="hljs-number">2</span>]],
+				[[-<span class="hljs-number">1</span>,+<span class="hljs-number">1</span>], [+<span class="hljs-number">1</span>,+<span class="hljs-number">1</span>], [-<span class="hljs-number">2</span>,+<span class="hljs-number">1</span>], [+<span class="hljs-number">1</span>, <span class="hljs-number">0</span>], [-<span class="hljs-number">2</span>, <span class="hljs-number">0</span>]],
+				[[ <span class="hljs-number">0</span>,+<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,+<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,+<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,-<span class="hljs-number">1</span>], [ <span class="hljs-number">0</span>,+<span class="hljs-number">2</span>]]
+			],
+			color: <span class="hljs-string">"Cyan"</span>
+		}
+	}
+})</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>tetris_view.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="clock.html">
+                clock.js
+              </a>
+            
+              
+              <a class="source" href="event_emitter.html">
+                event_emitter.js
+              </a>
+            
+              
+              <a class="source" href="model.html">
+                model.js
+              </a>
+            
+              
+              <a class="source" href="score_keeper.html">
+                score_keeper.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino.html">
+                tetrimino.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino_factory.html">
+                tetrimino_factory.js
+              </a>
+            
+              
+              <a class="source" href="tetris.html">
+                tetris.js
+              </a>
+            
+              
+              <a class="source" href="tetris_control.html">
+                tetris_control.js
+              </a>
+            
+              
+              <a class="source" href="tetris_view.html">
+                tetris_view.js
+              </a>
+            
+              
+              <a class="source" href="util.html">
+                util.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>tetris_view.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <pre><code>Tetris.js - A Tetris clone for HTML5
+Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+<span class="hljs-pi">	'use strict'</span>;
+
+	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);
+	<span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Canvas logic for drawing a game of Tetris. Extends <code>Model</code>.</p>
+<h2 id="attributes">Attributes</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <ul>
+<li><code>el</code> (HTTPCanvasElement): The canvas element to which is drawn.</li>
+<li><code>pen</code> (CanvasRenderingContext2D): The canvas context to use for drawing.</li>
+<li><code>roundness</code> (Number): A value used to determine how round to draw the
+blocks of the Tetriminos.
+0 = Square, 1 = Circle, 2 looks cool too.</li>
+<li><code>padding</code> (Number): A value used to calculate the padding size.
+0 = No padding, 1 = Max padding.</li>
+<li><code>border</code> (Number): A value used to calculate the border width.
+0 = No border, 1 = Max border.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> TetrisView = module.exports = Model.extend({
+
+		className: <span class="hljs-string">'tetris-canvas'</span>,
+		detail: <span class="hljs-number">50</span>, <span class="hljs-comment">// higher is better</span>
+
+
+		attributes: {
+			<span class="hljs-string">'el'</span>: <span class="hljs-literal">null</span>,       <span class="hljs-comment">// Canvas element we draw to</span>
+			<span class="hljs-string">'pen'</span>: <span class="hljs-literal">null</span>,      <span class="hljs-comment">// 2D rendering context</span>
+			<span class="hljs-string">'roundness'</span>: <span class="hljs-number">0.3</span>, <span class="hljs-comment">// Roundness of the blocks; 0 = square, 1 = circle, 2 = max</span>
+			<span class="hljs-string">'padding'</span>: <span class="hljs-number">0.3</span>,   <span class="hljs-comment">// Padding as a percent; 1 = max</span>
+			<span class="hljs-string">'border'</span>: <span class="hljs-number">0.3</span>     <span class="hljs-comment">// Width of block border as a percent; 1 = max</span>
+		},
+
+
+		initialize: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> el = document.createElement(<span class="hljs-string">'canvas'</span>);
+			<span class="hljs-keyword">var</span> pen = el.getContext(<span class="hljs-string">'2d'</span>);
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+
+			el.className = <span class="hljs-keyword">this</span>.className;
+			el.width = game.width * <span class="hljs-keyword">this</span>.detail;
+			el.height = (game.height - <span class="hljs-number">2</span>) * <span class="hljs-keyword">this</span>.detail; <span class="hljs-comment">// We hide top 2 rows</span>
+
+			<span class="hljs-keyword">this</span>.set({
+				<span class="hljs-string">'el'</span>: el,
+				<span class="hljs-string">'pen'</span>: pen
+			})
+
+			game.on(<span class="hljs-string">'update'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
+				<span class="hljs-keyword">this</span>.render();
+			}.bind(<span class="hljs-keyword">this</span>))
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="tetrisview-prototype-attach-parent-">TetrisView.prototype.attach(parent)</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>A convenience method to append the canvas as a child of a parent
+DOM node.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li><code>parent</code> (DOM Node): The element under which to attach the canvas.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		attach: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(parent)</span> {</span>
+			<span class="hljs-keyword">var</span> canvas = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'el'</span>);
+			parent.appendChild(canvas);
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <h2 id="tetrisview-prototype-render-x-y-width-height-">TetrisView.prototype.render([x, [y, [width, [height]]]])</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Renders the current state of the game for the region specified.
+The units are in terms of game &quot;blocks&quot;, not pixles.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li>The arguments are the bounding box of the the area to draw in
+game units. They default to drawing the whole board.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		render: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> matrix = game.get(<span class="hljs-string">'matrix'</span>);
+			<span class="hljs-keyword">var</span> fillStyle;
+
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> x !== <span class="hljs-string">'number'</span>) x = <span class="hljs-number">0</span>;
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> y !== <span class="hljs-string">'number'</span>) y = <span class="hljs-number">0</span>;
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> width !== <span class="hljs-string">'number'</span>) width = game.width;
+			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> height !== <span class="hljs-string">'number'</span>) height = game.height;
+
+			<span class="hljs-keyword">this</span>.clearArea(x, y, width, height);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Note that we draw the top two rows above the top of the canvas</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = y; i &lt; y + height; i++) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = x; j &lt; x + width; j++) {
+					<span class="hljs-keyword">if</span> ((j &gt;= <span class="hljs-number">0</span>) &amp;&amp; (i &gt;= <span class="hljs-number">2</span>) &amp;&amp; matrix[i] &amp;&amp; matrix[i][j]) {
+						fillStyle = matrix[i][j];
+						<span class="hljs-keyword">this</span>.drawBlock(j, i, fillStyle);
+					}
+				}
+			}
+
+			<span class="hljs-keyword">this</span>.drawGhost();
+			<span class="hljs-keyword">this</span>.drawCurrent();
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h2 id="tetrisview-prototype-drawcurrent-">TetrisView.prototype.drawCurrent()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Draws the current Tetrimino in play.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		drawCurrent: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> current = game.get(<span class="hljs-string">'current'</span>);
+			<span class="hljs-keyword">if</span> (current) {
+				<span class="hljs-keyword">var</span> x = current.get(<span class="hljs-string">'x'</span>);
+				<span class="hljs-keyword">var</span> y = current.get(<span class="hljs-string">'y'</span>);
+				<span class="hljs-keyword">var</span> width = current.get(<span class="hljs-string">'width'</span>);
+				<span class="hljs-keyword">var</span> height = current.get(<span class="hljs-string">'height'</span>);
+				<span class="hljs-keyword">var</span> box = current.get(<span class="hljs-string">'box'</span>);
+				<span class="hljs-keyword">var</span> color = current.get(<span class="hljs-string">'color'</span>);
+
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; height; row++) {
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; width; col++) {
+						<span class="hljs-keyword">if</span> (box[row][col]) {
+							<span class="hljs-keyword">this</span>.drawBlock(x + col, y + row, color)
+						}
+					}
+				}
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <h2 id="tetrisview-prototype-drawghost-">TetrisView.prototype.drawGhost()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Draws the ghost piece.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		drawGhost: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> current = game.get(<span class="hljs-string">'current'</span>);
+
+			<span class="hljs-keyword">if</span> (current) {
+				<span class="hljs-keyword">var</span> ghost = current.clone();
+				ghost.drop();
+				<span class="hljs-keyword">var</span> x = ghost.get(<span class="hljs-string">'x'</span>);
+				<span class="hljs-keyword">var</span> y = ghost.get(<span class="hljs-string">'y'</span>);
+				<span class="hljs-keyword">var</span> width = ghost.get(<span class="hljs-string">'width'</span>);
+				<span class="hljs-keyword">var</span> height = ghost.get(<span class="hljs-string">'height'</span>);
+				<span class="hljs-keyword">var</span> box = ghost.get(<span class="hljs-string">'box'</span>);
+
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; height; row++) {
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; width; col++) {
+						<span class="hljs-keyword">if</span> (box[row][col]) {
+							<span class="hljs-keyword">this</span>.drawBlock(x + col, y + row, <span class="hljs-string">'transparent'</span>)
+						}
+					}
+				}
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <h2 id="tetrisview-prototype-drawblock-x-y-fillstyle-">TetrisView.prototype.drawBlock(x, y, fillStyle)</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Draws a block at an arbitrary coordinate with the given fillStyle.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li><code>x</code> (Number): The x coordinate of the block in game units.</li>
+<li><code>y</code> (Number): The y coordinate of the block in game units.</li>
+<li><code>fillstyle</code> (String): The fill style to use for the center of the block.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		drawBlock: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, fillStyle)</span> {</span>
+			<span class="hljs-keyword">var</span> scale = <span class="hljs-keyword">this</span>.detail;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>We draw the top two rows above the canvas</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			y -= <span class="hljs-number">2</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Convert x and y from cell indicies to pixle locations</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			x *= scale;
+			y *= scale;
+
+			<span class="hljs-keyword">var</span> pen = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'pen'</span>);
+			<span class="hljs-keyword">var</span> padding = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'padding'</span>) * scale / <span class="hljs-number">2</span>;
+			<span class="hljs-keyword">var</span> border = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'border'</span>);
+			<span class="hljs-keyword">var</span> roundness = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'roundness'</span>);
+			<span class="hljs-keyword">var</span> radius = (roundness * (scale - (<span class="hljs-number">2</span> * padding))) / <span class="hljs-number">2</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Corner locations</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">var</span> tl = { <span class="hljs-string">'x'</span>: x + padding, <span class="hljs-string">'y'</span>: y + padding }
+			<span class="hljs-keyword">var</span> tr = { <span class="hljs-string">'x'</span>: x + scale - padding, <span class="hljs-string">'y'</span>: y + padding }
+			<span class="hljs-keyword">var</span> bl = { <span class="hljs-string">'x'</span>: x + padding, <span class="hljs-string">'y'</span>: y + scale - padding }
+			<span class="hljs-keyword">var</span> br = { <span class="hljs-string">'x'</span>: x + scale - padding, <span class="hljs-string">'y'</span>: y + scale - padding }
+			
+			pen.save();
+
+			pen.fillStyle = fillStyle;
+			pen.strokeStyle = <span class="hljs-string">'black'</span>;
+			pen.lineWidth = border * scale / <span class="hljs-number">2</span>;
+
+			pen.moveTo(tl.x + radius, tl.y);
+			pen.beginPath();
+
+			pen.lineTo(tr.x - radius, tr.y);
+			pen.arcTo(tr.x, tr.y, tr.x, tr.y + radius, radius);
+			
+			pen.lineTo(br.x, br.y - radius);
+			pen.arcTo(br.x, br.y, br.x - radius, br.y, radius);
+
+			pen.lineTo(bl.x + radius, bl.y);
+			pen.arcTo(bl.x, bl.y, bl.x, bl.y - radius, radius);
+
+			pen.lineTo(tl.x, tl.y + radius);
+			pen.arcTo(tl.x, tl.y, tl.x + radius, tl.y, radius);
+			pen.closePath();
+
+			pen.fill();
+			pen.stroke();
+
+			pen.restore();
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <h2 id="tetrisview-prototype-render-x-y-width-height-">TetrisView.prototype.render([x, [y, [width, [height]]]])</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Clears the area of the canvas in terms of game units.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li>The arguments are the bounding box of the the area to draw in
+game units. They default to drawing the whole board.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		clearArea: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
+			<span class="hljs-keyword">var</span> pen = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'pen'</span>);
+			<span class="hljs-keyword">var</span> scale = <span class="hljs-keyword">this</span>.detail;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Note that we draw the top two rows above the canvas</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			y -= <span class="hljs-number">2</span>;
+
+			pen.clearRect(x * scale - <span class="hljs-number">1</span>, y * scale - <span class="hljs-number">1</span>, width * scale + <span class="hljs-number">2</span>, height * scale + <span class="hljs-number">2</span>);
+		}
+	})
+})</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

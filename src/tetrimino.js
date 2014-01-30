@@ -1,20 +1,18 @@
-/*
- * Tetris.js - A Tetris clone for HTML5
- * Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+//     Tetris.js - A Tetris clone for HTML5
+//     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
+//     
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//     
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+//     
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 define(function (require, exports, module) {
@@ -23,29 +21,27 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
-	/**
-	 * Tetrimino
-	 * =========
-	 * A collection of 4 adjacent blocks in 2D space.
-	 *
-	 * There are 7 unique shapes of Tetrimino, named by the letters they look
-	 * most similar to: S, Z, J, L, I, O, and T. Each Tetrimino consists of
-	 * the 4 Blocks arranged in a 4x4 grid. And each shape other than the O
-	 * has 4 unique orientations. An X and Y coordinate may be applied to the
-	 * Tetrimino, and a coordinate pair for each Block can be calculated as an
-	 * offset relative to the Tetrimino.
-	 *
-	 * Attributes
-	 * ----------
-	 * - x (Number): The X coordinate, right is positive
-	 * - y (Number): The Y coordinate, down is positive
-	 * - state (Number): The rotation state
-	 * - type (String): The name of this Tetrimino's shape
-	 * - bounds (Array -> Boolean): A function representing the bounds on the
-	 *   Tetrimino's movement. It gets passed an array of 4 coordinate pairs
-	 *   of the form [x,y] that represent the coordinates the tetrimino
-	 *   requires. It should return `false` if any of the coordinates are bad.
-	 */
+	// The playing piece in a game of tetris.
+	// A collection of 4 adjacent blocks in 2D space.
+	//
+	// There are 7 unique shapes of Tetrimino, named by the letters they look
+	// most similar to: S, Z, J, L, I, O, and T. Each Tetrimino consists of
+	// the 4 Blocks arranged in a 4x4 grid. And each shape other than the O
+	// has 4 unique orientations. An X and Y coordinate may be applied to the
+	// Tetrimino, and a coordinate pair for each Block can be calculated as an
+	// offset relative to the Tetrimino.
+	//
+	// Attributes
+	// ----------
+	// - `x` (Number): The X coordinate, right is positive.
+	// - `y` (Number): The Y coordinate, down is positive.
+	// - `state` (Number): The rotation state.
+	// - `type` (String): The name of this Tetrimino's shape.
+	// - `bounds` (Function Array -> Boolean): A function representing the
+	//   bounds on the Tetrimino's movement. It gets passed an array of 4
+	//   coordinate pairs of the form [x,y] that represent the coordinates
+	//   the tetrimino requires. It should return `false` if any of the
+	//   coordinates are bad.
 
 	var Tetrimino = module.exports = Model.extend({
 
@@ -62,24 +58,17 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * var tetrimino = new Tetrimino([attributes])
-		 * -------------------------------------------
-		 */
-
 		initialize: function () {
 			var type = Tetrimino.types[this.get('type')];
 			this.set(type);
 		},
 
 
-		/**
-		 * Tetrimino.prototype.rotate()
-		 * ----------------------------
-		 * Rotates the piece clockwise, following the Super Rotation System
-		 * algorithm. The normal rotation and 4 differents wall kicks are
-		 * attempted. If none work, the piece is left as-is.
-		 */
+		// t.rotate()
+		// ----------
+		// Rotates the piece clockwise, following the Super Rotation System
+		// algorithm. The normal rotation and 4 differents wall kicks are
+		// attempted. If none work, the piece is left as-is.
 
 		rotate: function (count) {
 			var x = this.get('x');
@@ -118,12 +107,14 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetrimino.prototype.move(dx, dy)
-		 * --------------------------------
-		 * Attempts to move the Tetrimino.
-		 * Returns an object providing the new position
-		 */
+		// t.move(dx, dy)
+		// --------------
+		// Attempts to move the Tetrimino. Returns an object providing the
+		// new position.
+		//
+		// ### Params
+		// - `dx` (Number): The change in x.
+		// - `dy` (Number): The change in y.
 
 		move: function (dx, dy) {
 			var x = this.get('x');
@@ -143,11 +134,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetrimino.prototype.drop()
-		 * --------------------------
-		 * Moves the tetrimino as far down as it can go
-		 */
+		// t.drop()
+		// --------
+		// Moves the tetrimino as far down as it can go
 
 		drop: function () {
 			var x = this.get('x');
@@ -160,12 +149,10 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetrimino.prototype.getCoordinates()
-		 * ------------------------------------
-		 * Returns a list of [x,y] coordinate pairs for each block of the
-		 * tetrimino.
-		 */
+		// t.getCoordinates()
+		// ------------------
+		// Returns an array of [x, y] coordinate pairs (arrays) for each
+		// block of the tetrimino.
 
 		getCoordinates: function () {
 			var box = this.get('box');
@@ -175,13 +162,8 @@ define(function (require, exports, module) {
 		},
 
 
-
-		/***
-		 * Tetrimino.prototype._getCoordinates(box, x, y)
-		 * ----------------------------------------------
-		 * Returns a list of [x,y] coordinate pairs for each "block" in the
-		 * given "box" offset by the given coordinates.
-		 */
+		// Returns a list of (x, y) coordinate pairs for each "block" in the
+		// given "box" offset by the given coordinates.
 
 		_getCoordinates: function (box, x, y) {
 			var coords = [];
@@ -196,13 +178,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/***
-		 * Tetrimino.prototype._inBounds(box, x, y)
-		 * ----------------------------------------
-		 * Returns false if the Tetrimino cannot be positioned at the given
-		 * coordinates with the given box. Uses the public `bounds` attribute
-		 * function to do the actuall bounds checking.
-		 */
+		// Returns false if the Tetrimino cannot be positioned at the given
+		// coordinates with the given box. Uses the public `bounds` attribute
+		// function to do the actuall bounds checking.
 
 		_inBounds: function (box, x, y) {
 			var bounds = this.get('bounds');
@@ -242,6 +220,8 @@ define(function (require, exports, module) {
 		}
 	})
 
+
+	// Default attributes for specific Tetrimino types
 	Tetrimino.types = {
 		J: {
 			x: 3,

@@ -1,20 +1,18 @@
-/*
- * Tetris.js - A Tetris clone for HTML5
- * Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+//     Tetris.js - A Tetris clone for HTML5
+//     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
+//     
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//     
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+//     
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 define(function (require, exports, module) {
@@ -23,6 +21,16 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
+	 // Handles the user input and controls a Tetris game. Extends `Model`.
+	 //
+	 // This file is tightly coupled to the `index.xhtml` file. This control
+	 // expects the DOM to be layed out as in that file.
+	 //
+	 // Attributes
+	 // ----------
+	 // - `document` (DOM document): The DOM tree of the page.
+	 // - `game` (Tetris): The game being controlled. Defaults to null.
+
 	var TetrisControl = module.exports = Model.extend({
 
 		das: 200, // Delayed Auto Shift: the amount of time before auto repeat
@@ -30,66 +38,25 @@ define(function (require, exports, module) {
 		          // http://harddrop.com/wiki/DAS
 
 		attributes: {
-			document: document, // The DOM tree being controled
-			game: null
+			document: document, // The DOM tree being controled.
+			game: null          // The underlying game being controled.
 		},
 
 
-		/**
-		 * var tc = new TetrisControl(attributes)
-		 * --------------------------------------
-		 * You should set the `game` attribute on construction
-		 */
-
 		initialize: function () {
-			var game = this.get('game');
-
 			this.onKeydown = this.onKeydown.bind(this);
 			this.onKeyup = this.onKeyup.bind(this);
 			this.openInstructions = this.openInstructions.bind(this);
 			this.startGame = this.startGame.bind(this);
-
-			game.on('lock', function (coords) {
-				for (var i = coords.length - 1; i >= 0; i--) {
-					if (coords[i][1] < 2) {
-						game.stop();
-						return;
-					}
-				}
-				game.spawn();
-			})
-
-			game.on('score', function (score, multiplier) {
-				var document = this.get('document');
-				var scores = document.getElementsByClassName('score-value');
-				for (var i = scores.length - 1; i >= 0; i-- ) {
-					scores[i].innerHTML = '';
-					if (score < 1000) scores[i].innerHTML += '0';
-					if (score < 100) scores[i].innerHTML += '0';
-					if (score < 10) scores[i].innerHTML += '0';
-					scores[i].innerHTML += score;
-				}
-			}.bind(this))
-
-			game.on('stop', function () {
-				this.quitGame();
-			}.bind(this))
-
-			game.on('start', function () {
-				var document = this.get('document');
-				var scores = document.getElementsByClassName('score-value');
-				for (var i = scores.length - 1; i >= 0; i-- ) {
-					scores[i].innerHTML = '0000';
-				}
-			}.bind(this));
 		},
 
 
-		/**
-		 *
-		 */
+		 // tc.delegateEvents()
+		 // -------------------
+		 // Sets up all necessary event handlers.
 
 		delegateEvents: function () {
+			var game = this.get('game');
 			var document = this.get('document');
 			var menu = document.getElementById('menu');
 			var nextBtns = menu.getElementsByClassName('next-btn');
@@ -97,6 +64,42 @@ define(function (require, exports, module) {
 			var game = this.get('game');
 			var view = game.get('view');
 			var canvas = view.get('el');
+
+			if (game) {
+				game.on('lock', function (coords) {
+					for (var i = coords.length - 1; i >= 0; i--) {
+						if (coords[i][1] < 2) {
+							game.stop();
+							return;
+						}
+					}
+					game.spawn();
+				})
+
+				game.on('score', function (score, multiplier) {
+					var document = this.get('document');
+					var scores = document.getElementsByClassName('score-value');
+					for (var i = scores.length - 1; i >= 0; i-- ) {
+						scores[i].innerHTML = '';
+						if (score < 1000) scores[i].innerHTML += '0';
+						if (score < 100) scores[i].innerHTML += '0';
+						if (score < 10) scores[i].innerHTML += '0';
+						scores[i].innerHTML += score;
+					}
+				}.bind(this))
+
+				game.on('stop', function () {
+					this.quitGame();
+				}.bind(this))
+
+				game.on('start', function () {
+					var document = this.get('document');
+					var scores = document.getElementsByClassName('score-value');
+					for (var i = scores.length - 1; i >= 0; i-- ) {
+						scores[i].innerHTML = '0000';
+					}
+				}.bind(this));
+			}
 
 			window.addEventListener('keydown', this.onKeydown, false);
 			window.addEventListener('keyup', this.onKeyup, false);
@@ -111,9 +114,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		 // tc.undelegateEvents()
+		 // ---------------------
+		 // Removes all event handlers set with `delegateEvents`.
 
 		undelegateEvents: function () {
 			var document = this.get('document');
@@ -137,9 +140,10 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// Event handlers
+		// --------------
+
+		// Handles the keydown event
 
 		onKeydown: function (event) {
 			// debounced and throttled
@@ -234,9 +238,7 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// Handles the keyup event
 
 		onKeyup: function (event) {
 			this._debounced = false;
@@ -245,12 +247,8 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * TetrisControl.prototype.openInstructions()
-		 * ------------------------------------------
-		 * Transitions from the intro panel to the instructions panel.
-		 * Assumes that the menu and into are open.
-		 */
+		// Transitions from the intro panel to the instructions panel.
+		// Assumes that the menu and into are open.
 
 		openInstructions: function () {
 			var document = this.get('document');
@@ -265,9 +263,7 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// Start the underlying game
 
 		startGame: function () {
 			var game = this.get('game');
@@ -287,9 +283,7 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// Pause the underlying game
 
 		pauseGame: function () {
 			var game = this.get('game');
@@ -305,9 +299,7 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		// End the underlying game
 
 		quitGame: function () {
 			var game = this.get('game');

@@ -29,10 +29,12 @@ Credits
 
 Development tools
 -----------------
+- [Docco]: Docco is a quick-and-dirty, hundred-line-long, literate-programming-style documentation generator.
 - [Require.js]: A file and module loader for JavaScript.
 - [Mocha]: A simple, flexible, fun javascript test framework for node.js & the browser.
 - [Chai]: A BDD / TDD assertion framework for node.js and the browser that can be paired with any testing framework.
 
+[Docco]: https://github.com/jashkenas/docco
 [Require.js]: https://github.com/jrburke/requirejs
 [Mocha]: https://github.com/visionmedia/mocha
 [Chai]: https://github.com/chaijs/chai

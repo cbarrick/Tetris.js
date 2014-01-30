@@ -1,20 +1,18 @@
-/*
- * Tetris.js - A Tetris clone for HTML5
- * Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
+//     Tetris.js - A Tetris clone for HTML5
+//     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
+//     
+//     This program is free software: you can redistribute it and/or modify
+//     it under the terms of the GNU General Public License as published by
+//     the Free Software Foundation, either version 3 of the License, or
+//     (at your option) any later version.
+//     
+//     This program is distributed in the hope that it will be useful,
+//     but WITHOUT ANY WARRANTY; without even the implied warranty of
+//     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//     GNU General Public License for more details.
+//     
+//     You should have received a copy of the GNU General Public License
+//     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 define(function (require, exports, module) {
@@ -27,33 +25,44 @@ define(function (require, exports, module) {
 	var TetrisView = require('tetris_view');
 
 
-	/**
-	 * Tetris
-	 * ======
-	 * The board on which tetris is played.
-	 *
-	 * A matrix manages its own queue of Tetriminos and hold slots.
-	 * It exposes the API for moving pieces around.
-	 *
-	 * Events
-	 * ------
-	 * - All clock events
-	 * - clear
-	 * - lock
-	 * - move
-	 * - rotate
-	 * - update
-	 * - score (current score, multiplier): Triggered when the user scores
-	 * - restart: Triggered when the game is restarted
-	 * 
-	 *
-	 * Attributes
-	 * ----------
-	 * - matrix (Array): A 10 x 22 2D array of blocks on the board
-	 * - queue (TetriminoFactory): The Tetriminos to be played
-	 * - current (Tetrimino): The current Tetrimino being played
-	 * - hold (Tetrimino): The Tetrimino currently on hold
-	 */
+	 // The board on which tetris is played. Extends `Clock`.
+	 //
+	 // A matrix manages its own queue of Tetriminos and hold slots.
+	 // It exposes the API for moving pieces around.
+	 // 
+	 // A Tetris instance acts just like a clock, where the clock states
+	 // correspond to gameplay.
+	 // 
+	 //
+	 // Events
+	 // ------
+	 // - `clear` (rows): Triggered when a line or lines are cleared. Gets
+	 //   passed an array of line numbers cleared.
+	 // - `lock` (coords): Triggered when the in play tetrimino becomes locked
+	 //   in place. Gets passed an array of [x, y] coordinate pairs for the
+	 //   resulting location of each block of the Tetrimino
+	 // - `rotate` (state): Triggered when the in play tetrimino rotates.
+	 // - `update` (x, y, width, height): Triggered when the internal matirx
+	 //   has updated passing a the coordinates of the bounding box of the
+	 //   updated area.
+	 // - `score` (current score, multiplier): Triggered when the user scores
+	 // - `spawn` (state): Triggered when a new Tetrimino is spawned.
+	 // - `restart` (state): Triggered when the game is restarted
+	 // 
+	 //
+	 // Attributes
+	 // ----------
+	 // - `controler` (TetrisControl): The controller of the game.
+	 // - `current` (Tetrimino): The current Tetrimino being played.
+	 // - `dropLock` (Boolean): If the current Tetrimino is being locked from
+	 //   autodroping.
+	 // - `hold` (Tetrimino): The terimino being held. Starts as `null`.
+	 // - `matrix` (2D Array): The game board as [row][col] from top-left to
+	 //   bottom-right. A standard game of Tetris is 10 x 22. The top two rows
+	 //   should not be shown to the user.
+	 // - `queue` (TetriminoFactory): The Tetriminos to be played.
+	 // - `score_keeper` (ScoreKeeper): The logic for keeping up with the score.
+	 // - `view` (TetrisView): The view of the game.
 
 	var Tetris = module.exports = Clock.extend({
 
@@ -74,12 +83,6 @@ define(function (require, exports, module) {
 			view: null           // View of this game
 		},
 
-
-		/**
-		 * var game = new Tetris()
-		 * -----------------------
-		 *
-		 */
 
 		initialize: function () {
 			Clock.prototype.initialize.call(this);
@@ -119,12 +122,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetris.prototype.left() / Tetris.prototype.right() / Tetris.prototype.down()
-		 * --
-		 * Move the current Tetrimino in the desired direction
-		 * TODO: Document return value
-		 */
+		 // t.left(), t.right(), t.down()
+		 // -----------------------------
+		 // Move the current Tetrimino in the desired direction
 
 		left:  function () {return this._move(-1, 0)},
 		right: function () {return this._move(1, 0)},
@@ -140,14 +140,12 @@ define(function (require, exports, module) {
 
 				newpos = current.move(dx, dy);
 
-				// dx, dy become the actual change
-				// x, y become the new position
+				// dx, dy become the actual change from new to old
 				dx = (newpos.x > x) ? newpos.x - x : x - newpos.x;
 				dy = (newpos.y > y) ? newpos.y - y : y - newpos.y;
 				x = newpos.x;
 				y = newpos.y;
 
-				this.trigger('move');
 				this.trigger('update', x - dx, y - dy, width + 2 * dx, height + 2 * dy);
 
 				return { 'x': x, 'y': y };
@@ -155,11 +153,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetris.prototype.rotate()
-		 * --
-		 * Rotate the current Tetrimino, performing wall-kicks when nessecary
-		 */
+		 // t.rotate()
+		 // ----------
+		 // Rotate the current Tetrimino, performing wall-kicks and spins.
 
 		rotate: function () {
 			var current = this.get('current');
@@ -173,20 +169,19 @@ define(function (require, exports, module) {
 					current.rotate();
 				}
 
-				this.trigger('rotate');
+				this.trigger('rotate', this.toJson());
 				this.trigger('update', x, y, width, height);
 			}
 		},
 
 
-		/**
-		 * Tetris.prototype.drop(hard, nolock)
-		 * -----------------------------------
-		 * Drops the current Tetrimino. If `hard` evaluates to `true`, performs
-		 * a hard drop, meaning the Tetrimino is dropped as far as it can go
-		 * and locked. Else it moves down only one row. If it can't move down,
-		 * it is locked.
-		 */
+		 // t.drop(hard, nolock)
+		 // --------------------
+		 // Drops the current Tetrimino. If it can't move down, it is locked.
+		 //
+		 // ### Params
+		 // - `hard` (Boolean): If true, drops all the way down, else drops one line.
+		 // - `nolock` (Boolean): If true, prevents the Tetrimino from being locked.
 
 		drop: function (hard, nolock) {
 			var matrix = this.get('matrix');
@@ -216,9 +211,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 *
-		 */
+		 // t.hold()
+		 // --------
+		 // Puts the current piece on hold.
 
 		hold: function () {
 			var current = this.get('current');
@@ -241,11 +236,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetris.prototype.lock()
-		 * --
-		 * Lock the current Tetrimino in place
-		 */
+		 // t.lock()
+		 // --------
+		 // Lock the current Tetrimino in place.
 
 		lock: function () {
 			var current = this.get('current');
@@ -272,11 +265,9 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetris.prototype.spawn()
-		 * --
-		 * Spawn the next Tetrimino
-		 */
+		 // t.spawn()
+		 // ---------
+		 // Spawn the next Tetrimino.
 
 		spawn: function () {
 			var queue = this.get('queue');
@@ -287,16 +278,14 @@ define(function (require, exports, module) {
 			var height = current.get('height');
 
 			this.set('current', current);
-			this.trigger('spawn');
+			this.trigger('spawn', this.toJson());
 			this.trigger('update', x, y, width, height);
 		},
 
 
-		/**
-		 * Tetris.prototype.restart()
-		 * --------------------------
-		 * Restarts the game. The game will be in the "stopped" state.
-		 */
+		 // t.restart()
+		 // -----------
+		 // Restarts the game. The game will be in the "stopped" state.
 
 		restart: function () {
 			var queue = new TetriminoFactory({ bounds: this._bounds.bind(this) });
@@ -314,17 +303,14 @@ define(function (require, exports, module) {
 				'queue': queue
 			})
 			
-			this._stop();
+			Clock.prototype.restart.call(this);
 			this.spawn();
-			this.trigger('restart');
 		},
 
 
-		/**
-		 * Tetris.prototype.clearLines()
-		 * -----------------------------
-		 * Checks if any rows are full and clears them if so.
-		 */
+		 // t.clearLines()
+		 // --------------
+		 // Checks if any rows are full and clears them if so.
 
 		clearLines: function () {
 			var rows = [];
@@ -358,17 +344,17 @@ define(function (require, exports, module) {
 		},
 
 
-		/**
-		 * Tetris.prototype.resetDropTime()
-		 * --------------------------------
-		 * Resets the time until the next autodrop
-		 */
+		 // t.resetDropTime()
+		 // -----------------
+		 // Resets the time until the next autodrop
 
 		resetDropTime: function () {
 			Clock.prototype._stop.call(this);
 			Clock.prototype._start.call(this);
 		},
 
+
+		// Returns a 2D array of null elements
 
 		_getEmptyMatrix: function () {
 			var matrix = []
@@ -381,6 +367,8 @@ define(function (require, exports, module) {
 			return matrix;
 		},
 
+
+		// The bounding funciton given to the Tetriminos
 
 		_bounds: function (coordinates) {
 			var matrix = this.get('matrix');

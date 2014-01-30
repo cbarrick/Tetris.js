@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>tetris_control.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="clock.html">
+                clock.js
+              </a>
+            
+              
+              <a class="source" href="event_emitter.html">
+                event_emitter.js
+              </a>
+            
+              
+              <a class="source" href="model.html">
+                model.js
+              </a>
+            
+              
+              <a class="source" href="score_keeper.html">
+                score_keeper.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino.html">
+                tetrimino.js
+              </a>
+            
+              
+              <a class="source" href="tetrimino_factory.html">
+                tetrimino_factory.js
+              </a>
+            
+              
+              <a class="source" href="tetris.html">
+                tetris.js
+              </a>
+            
+              
+              <a class="source" href="tetris_control.html">
+                tetris_control.js
+              </a>
+            
+              
+              <a class="source" href="tetris_view.html">
+                tetris_view.js
+              </a>
+            
+              
+              <a class="source" href="util.html">
+                util.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>tetris_control.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <pre><code>Tetris.js - A Tetris clone for HTML5
+Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</code></pre>
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+<span class="hljs-pi">	'use strict'</span>;
+
+	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Handles the user input and controls a Tetris game. Extends <code>Model</code>.</p>
+<p>This file is tightly coupled to the <code>index.xhtml</code> file. This control
+expects the DOM to be layed out as in that file.</p>
+<h2 id="attributes">Attributes</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <ul>
+<li><code>document</code> (DOM document): The DOM tree of the page.</li>
+<li><code>game</code> (Tetris): The game being controlled. Defaults to null.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> TetrisControl = module.exports = Model.extend({
+
+		das: <span class="hljs-number">200</span>, <span class="hljs-comment">// Delayed Auto Shift: the amount of time before auto repeat</span>
+		arr: <span class="hljs-number">45</span>,  <span class="hljs-comment">// Auto Repeat Rate: the amount of time between auto repeats</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p><a href="http://harddrop.com/wiki/DAS">http://harddrop.com/wiki/DAS</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		attributes: {
+			document: document, <span class="hljs-comment">// The DOM tree being controled.</span>
+			game: <span class="hljs-literal">null</span>          <span class="hljs-comment">// The underlying game being controled.</span>
+		},
+
+
+		initialize: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">this</span>.onKeydown = <span class="hljs-keyword">this</span>.onKeydown.bind(<span class="hljs-keyword">this</span>);
+			<span class="hljs-keyword">this</span>.onKeyup = <span class="hljs-keyword">this</span>.onKeyup.bind(<span class="hljs-keyword">this</span>);
+			<span class="hljs-keyword">this</span>.openInstructions = <span class="hljs-keyword">this</span>.openInstructions.bind(<span class="hljs-keyword">this</span>);
+			<span class="hljs-keyword">this</span>.startGame = <span class="hljs-keyword">this</span>.startGame.bind(<span class="hljs-keyword">this</span>);
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="tc-delegateevents-">tc.delegateEvents()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Sets up all necessary event handlers.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		delegateEvents: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+			<span class="hljs-keyword">var</span> menu = document.getElementById(<span class="hljs-string">'menu'</span>);
+			<span class="hljs-keyword">var</span> nextBtns = menu.getElementsByClassName(<span class="hljs-string">'next-btn'</span>);
+			<span class="hljs-keyword">var</span> playBtns = menu.getElementsByClassName(<span class="hljs-string">'play-btn'</span>);
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> view = game.get(<span class="hljs-string">'view'</span>);
+			<span class="hljs-keyword">var</span> canvas = view.get(<span class="hljs-string">'el'</span>);
+
+			<span class="hljs-keyword">if</span> (game) {
+				game.on(<span class="hljs-string">'lock'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(coords)</span> {</span>
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = coords.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+						<span class="hljs-keyword">if</span> (coords[i][<span class="hljs-number">1</span>] &lt; <span class="hljs-number">2</span>) {
+							game.stop();
+							<span class="hljs-keyword">return</span>;
+						}
+					}
+					game.spawn();
+				})
+
+				game.on(<span class="hljs-string">'score'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(score, multiplier)</span> {</span>
+					<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+					<span class="hljs-keyword">var</span> scores = document.getElementsByClassName(<span class="hljs-string">'score-value'</span>);
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = scores.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i-- ) {
+						scores[i].innerHTML = <span class="hljs-string">''</span>;
+						<span class="hljs-keyword">if</span> (score &lt; <span class="hljs-number">1000</span>) scores[i].innerHTML += <span class="hljs-string">'0'</span>;
+						<span class="hljs-keyword">if</span> (score &lt; <span class="hljs-number">100</span>) scores[i].innerHTML += <span class="hljs-string">'0'</span>;
+						<span class="hljs-keyword">if</span> (score &lt; <span class="hljs-number">10</span>) scores[i].innerHTML += <span class="hljs-string">'0'</span>;
+						scores[i].innerHTML += score;
+					}
+				}.bind(<span class="hljs-keyword">this</span>))
+
+				game.on(<span class="hljs-string">'stop'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">this</span>.quitGame();
+				}.bind(<span class="hljs-keyword">this</span>))
+
+				game.on(<span class="hljs-string">'start'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+					<span class="hljs-keyword">var</span> scores = document.getElementsByClassName(<span class="hljs-string">'score-value'</span>);
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = scores.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i-- ) {
+						scores[i].innerHTML = <span class="hljs-string">'0000'</span>;
+					}
+				}.bind(<span class="hljs-keyword">this</span>));
+			}
+
+			window.addEventListener(<span class="hljs-string">'keydown'</span>, <span class="hljs-keyword">this</span>.onKeydown, <span class="hljs-literal">false</span>);
+			window.addEventListener(<span class="hljs-string">'keyup'</span>, <span class="hljs-keyword">this</span>.onKeyup, <span class="hljs-literal">false</span>);
+
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = nextBtns.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+				nextBtns[i].addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-keyword">this</span>.openInstructions, <span class="hljs-literal">false</span>);
+			}
+
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = playBtns.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+				playBtns[i].addEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-keyword">this</span>.startGame, <span class="hljs-literal">false</span>);
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <h2 id="tc-undelegateevents-">tc.undelegateEvents()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Removes all event handlers set with <code>delegateEvents</code>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		undelegateEvents: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+			<span class="hljs-keyword">var</span> menu = document.getElementById(<span class="hljs-string">'menu'</span>);
+			<span class="hljs-keyword">var</span> nextBtns = menu.getElementsByClassName(<span class="hljs-string">'next-btn'</span>);
+			<span class="hljs-keyword">var</span> playBtns = menu.getElementsByClassName(<span class="hljs-string">'play-btn'</span>);
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> view = game.get(<span class="hljs-string">'view'</span>);
+			<span class="hljs-keyword">var</span> canvas = view.get(<span class="hljs-string">'el'</span>);
+
+			window.removeEventListener(<span class="hljs-string">'keydown'</span>, <span class="hljs-keyword">this</span>.onKeydown, <span class="hljs-literal">false</span>);
+			window.removeEventListener(<span class="hljs-string">'keyup'</span>, <span class="hljs-keyword">this</span>.onKeyup, <span class="hljs-literal">false</span>);
+
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = nextBtns.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+				nextBtns[i].removeEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-keyword">this</span>.openInstructions, <span class="hljs-literal">false</span>);
+			}
+
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = playBtns.length - <span class="hljs-number">1</span>; i &gt;= <span class="hljs-number">0</span>; i--) {
+				playBtns[i].removeEventListener(<span class="hljs-string">'click'</span>, <span class="hljs-keyword">this</span>.startGame, <span class="hljs-literal">false</span>);
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <h2 id="event-handlers">Event handlers</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Handles the keydown event</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		onKeydown: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(event)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>debounced and throttled</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> gameState = game.get(<span class="hljs-string">'state'</span>);
+			<span class="hljs-keyword">var</span> repeat = <span class="hljs-literal">true</span>;
+			<span class="hljs-keyword">var</span> valid = <span class="hljs-literal">true</span>;
+			<span class="hljs-keyword">var</span> action;
+
+			<span class="hljs-keyword">if</span> (<span class="hljs-string">'Up'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'running'</span>) {
+						game.resetDropTime();
+						game.rotate();
+					}
+				}
+				repeat = <span class="hljs-literal">false</span>;
+
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'Down'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'running'</span>) {
+						game.resetDropTime();
+						game.down();
+					}
+				}
+
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'Left'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'running'</span>) {
+						game.resetDropTime();
+						game.left();
+					}
+				}
+
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'Right'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'running'</span>) {
+						game.resetDropTime();
+						game.right();
+					}
+				}
+
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'U+0020'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'running'</span>) {
+						game.drop(<span class="hljs-literal">true</span>);
+					}
+				}
+				repeat = <span class="hljs-literal">false</span>;
+
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'Shift'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'running'</span>) {
+						game.hold();
+					}
+				}
+				repeat = <span class="hljs-literal">false</span>;
+
+			} <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (<span class="hljs-string">'U+001B'</span> === event.keyIdentifier) {
+				action = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">if</span> (gameState === <span class="hljs-string">'paused'</span>) {
+						<span class="hljs-keyword">this</span>.startGame()
+					} <span class="hljs-keyword">else</span> {
+						<span class="hljs-keyword">this</span>.pauseGame();
+					}
+				}
+				action = action.bind(<span class="hljs-keyword">this</span>);
+
+			} <span class="hljs-keyword">else</span> {
+				valid = <span class="hljs-literal">false</span>;
+			}
+
+			<span class="hljs-keyword">if</span> (valid &amp;&amp; !<span class="hljs-keyword">this</span>._debounced &amp;&amp; !<span class="hljs-keyword">this</span>._throttled) {
+				<span class="hljs-keyword">this</span>._debounced = <span class="hljs-literal">true</span>;
+				<span class="hljs-keyword">this</span>._throttled = <span class="hljs-literal">true</span>;
+
+				action();
+
+				<span class="hljs-keyword">if</span> (repeat) {
+					setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+						<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._debounced) {
+							clearInterval(<span class="hljs-keyword">this</span>._keyInterval);
+							<span class="hljs-keyword">this</span>._keyInterval = setInterval(action, <span class="hljs-keyword">this</span>.arr);
+						}
+					}.bind(<span class="hljs-keyword">this</span>), <span class="hljs-keyword">this</span>.das)
+				}
+
+				setTimeout(<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+					<span class="hljs-keyword">this</span>._throttled = <span class="hljs-literal">false</span>;
+				}.bind(<span class="hljs-keyword">this</span>), <span class="hljs-keyword">this</span>.arr)
+			}
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Handles the keyup event</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		onKeyup: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(event)</span> {</span>
+			<span class="hljs-keyword">this</span>._debounced = <span class="hljs-literal">false</span>;
+			clearInterval(<span class="hljs-keyword">this</span>._keyInterval);
+			<span class="hljs-keyword">this</span>._keyInterval = <span class="hljs-literal">false</span>;
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Transitions from the intro panel to the instructions panel.
+Assumes that the menu and into are open.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		openInstructions: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+			<span class="hljs-keyword">var</span> intro = document.getElementById(<span class="hljs-string">'intro'</span>);
+			<span class="hljs-keyword">var</span> instructions = document.getElementById(<span class="hljs-string">'instructions'</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>remove the &#39;open&#39; class from the intro</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			intro.className = intro.className.replace(<span class="hljs-regexp">/\s*\bopen\b\s*/g</span>, <span class="hljs-string">''</span>);</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>add the &#39;open&#39; class to the instructions</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			instructions.className += <span class="hljs-string">' open'</span>;
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Start the underlying game</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		startGame: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+			<span class="hljs-keyword">var</span> scorePanel = document.getElementById(<span class="hljs-string">'score'</span>);
+			<span class="hljs-keyword">var</span> opened = document.getElementsByClassName(<span class="hljs-string">'open'</span>);
+			<span class="hljs-keyword">var</span> escAction = document.getElementById(<span class="hljs-string">'esc-action'</span>);
+
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = opened.length - <span class="hljs-number">1</span>; j &gt;= <span class="hljs-number">0</span>; j--) {
+				opened[j].className = opened[j].className.replace(<span class="hljs-regexp">/\s*\bopen\b\s*/g</span>, <span class="hljs-string">''</span>);
+			}
+
+			scorePanel.className += <span class="hljs-string">' open'</span>;
+			escAction.innerHTML = <span class="hljs-string">"pause"</span>;
+
+			game.start();
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Pause the underlying game</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		pauseGame: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+			<span class="hljs-keyword">var</span> menu = document.getElementById(<span class="hljs-string">'menu'</span>);
+			<span class="hljs-keyword">var</span> scorePanel = document.getElementById(<span class="hljs-string">'score'</span>);
+			<span class="hljs-keyword">var</span> escAction = document.getElementById(<span class="hljs-string">'esc-action'</span>);
+
+			menu.className += <span class="hljs-string">' open'</span>;
+			escAction.innerHTML = <span class="hljs-string">"resume"</span>;
+
+			game.pause();
+		},</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>End the underlying game</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>		quitGame: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> document = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'document'</span>);
+			<span class="hljs-keyword">var</span> menu = document.getElementById(<span class="hljs-string">'menu'</span>);
+			<span class="hljs-keyword">var</span> scorePanel = document.getElementById(<span class="hljs-string">'score'</span>);
+			<span class="hljs-keyword">var</span> gameOver = document.getElementById(<span class="hljs-string">'game-over'</span>);
+
+			scorePanel.className = scorePanel.className.replace(<span class="hljs-regexp">/\s*\bopen\b\s*/g</span>, <span class="hljs-string">''</span>);
+			gameOver.className += <span class="hljs-string">' open'</span>;
+			menu.className += <span class="hljs-string">' open'</span>;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Restart the game to be ready for the next one</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>			game.restart();
+		}
+
+	})
+
+})</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

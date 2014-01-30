@@ -3,6 +3,7 @@ Tetris.js
 A Tetris clone for HTML5
 
 The game is hosted at http://cbarrick.github.io/Tetris.js/
+
 Annotated source code documentation is [here][documentation].
 
 This game was created as a project for *CSCI 4070 - Game Programming* at the University of Georgia. The required report has been rendered to HTML as the index page of the [documentation]. To run the code from the repository, open `index.xhtml` in a browser. To run the unit tests, open `test/index.xhtml`.
@@ -23,12 +24,12 @@ The source has a very standard layout. Part of the requirement was that we use n
     ├── docs
     │   └── { Generated documentation }
     ├── lib
-    │   └── { Dev tools needed at runtime and/or compile time }
+    │   └── { Dev tools needed at run-time and/or compile-time }
     ├── src
     │   └── { The source logic for the game }
     └── test
         ├── lib
-        │   └── { Dev tools needed at testtime }
+        │   └── { Dev tools needed at test-time }
         ├── index.xhtml
         └── { The unit tests for the lower level classes }
 
@@ -44,7 +45,7 @@ Credits
 
 Development tools
 -----------------
-- [Docco]: Docco is a quick-and-dirty, hundred-line-long, literate-programming-style documentation generator.
+- [Docco]: A quick-and-dirty, hundred-line-long, literate-programming-style documentation generator.
 - [Require.js]: A file and module loader for JavaScript.
 - [Mocha]: A simple, flexible, fun javascript test framework for node.js & the browser.
 - [Chai]: A BDD / TDD assertion framework for node.js and the browser that can be paired with any testing framework.

@@ -8,3 +8,6 @@
 [submodule "test/lib/mocha"]
 	path = test/lib/mocha
 	url = https://github.com/visionmedia/mocha.git
+[submodule "lib/keys"]
+	path = lib/keys
+	url = https://github.com/bitwalker/keys.js.git

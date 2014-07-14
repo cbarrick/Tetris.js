@@ -1,16 +1,16 @@
 //     Tetris.js - A Tetris clone for HTML5
 //     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
-//     
+//
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
 //     the Free Software Foundation, either version 3 of the License, or
 //     (at your option) any later version.
-//     
+//
 //     This program is distributed in the hope that it will be useful,
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-//     
+//
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -19,7 +19,6 @@ define(function (require, exports, module) {
 	'use strict';
 
 	var Model = require('model');
-	var util = require('util');
 
 
 	// Canvas logic for drawing a game of Tetris. Extends `Model`.
@@ -36,7 +35,7 @@ define(function (require, exports, module) {
 	// - `border` (Number): A value used to calculate the border width.
 	//   0 = No border, 1 = Max border.
 
-	var TetrisView = module.exports = Model.extend({
+	module.exports = Model.extend({
 
 		className: 'tetris-canvas',
 		detail: 50, // higher is better
@@ -63,11 +62,12 @@ define(function (require, exports, module) {
 			this.set({
 				'el': el,
 				'pen': pen
-			})
+			});
 
 			game.on('update', function (x, y, width, height) {
+				// TODO: Only render the part being updated
 				this.render();
-			}.bind(this))
+			}.bind(this));
 		},
 
 
@@ -107,8 +107,8 @@ define(function (require, exports, module) {
 			this.clearArea(x, y, width, height);
 
 			// Note that we draw the top two rows above the top of the canvas
-			for (var i = y; i < y + height; i++) {
-				for (var j = x; j < x + width; j++) {
+			for (var i = y; i < y + height; i += 1) {
+				for (var j = x; j < x + width; j += 1) {
 					if ((j >= 0) && (i >= 2) && matrix[i] && matrix[i][j]) {
 						fillStyle = matrix[i][j];
 						this.drawBlock(j, i, fillStyle);
@@ -136,10 +136,10 @@ define(function (require, exports, module) {
 				var box = current.get('box');
 				var color = current.get('color');
 
-				for (var row = 0; row < height; row++) {
-					for (var col = 0; col < width; col++) {
+				for (var row = 0; row < height; row += 1) {
+					for (var col = 0; col < width; col += 1) {
 						if (box[row][col]) {
-							this.drawBlock(x + col, y + row, color)
+							this.drawBlock(x + col, y + row, color);
 						}
 					}
 				}
@@ -164,10 +164,10 @@ define(function (require, exports, module) {
 				var height = ghost.get('height');
 				var box = ghost.get('box');
 
-				for (var row = 0; row < height; row++) {
-					for (var col = 0; col < width; col++) {
+				for (var row = 0; row < height; row += 1) {
+					for (var col = 0; col < width; col += 1) {
 						if (box[row][col]) {
-							this.drawBlock(x + col, y + row, 'transparent')
+							this.drawBlock(x + col, y + row, 'transparent');
 						}
 					}
 				}
@@ -201,11 +201,11 @@ define(function (require, exports, module) {
 			var radius = (roundness * (scale - (2 * padding))) / 2;
 
 			// Corner locations
-			var tl = { 'x': x + padding, 'y': y + padding }
-			var tr = { 'x': x + scale - padding, 'y': y + padding }
-			var bl = { 'x': x + padding, 'y': y + scale - padding }
-			var br = { 'x': x + scale - padding, 'y': y + scale - padding }
-			
+			var tl = { 'x': x + padding,         'y': y + padding };
+			var tr = { 'x': x + scale - padding, 'y': y + padding };
+			var bl = { 'x': x + padding,         'y': y + scale - padding };
+			var br = { 'x': x + scale - padding, 'y': y + scale - padding };
+
 			pen.save();
 
 			pen.fillStyle = fillStyle;
@@ -217,7 +217,7 @@ define(function (require, exports, module) {
 
 			pen.lineTo(tr.x - radius, tr.y);
 			pen.arcTo(tr.x, tr.y, tr.x, tr.y + radius, radius);
-			
+
 			pen.lineTo(br.x, br.y - radius);
 			pen.arcTo(br.x, br.y, br.x - radius, br.y, radius);
 
@@ -252,5 +252,5 @@ define(function (require, exports, module) {
 
 			pen.clearRect(x * scale - 1, y * scale - 1, width * scale + 2, height * scale + 2);
 		}
-	})
-})
+	});
+});

@@ -1,16 +1,16 @@
 //     Tetris.js - A Tetris clone for HTML5
 //     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
-//     
+//
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
 //     the Free Software Foundation, either version 3 of the License, or
 //     (at your option) any later version.
-//     
+//
 //     This program is distributed in the hope that it will be useful,
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-//     
+//
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -47,7 +47,7 @@ define(function (require, exports, module) {
 
 		attributes: {
 			type: 'T',
-			bounds: function () {return true},
+			bounds: function () { return true; },
 			offsets: [
 				// Common offsets for J, L, S, Z, and T
 				[[ 0, 0], [ 0, 0], [ 0, 0], [ 0, 0], [ 0, 0]],
@@ -70,7 +70,7 @@ define(function (require, exports, module) {
 		// algorithm. The normal rotation and 4 differents wall kicks are
 		// attempted. If none work, the piece is left as-is.
 
-		rotate: function (count) {
+		rotate: function () {
 			var x = this.get('x');
 			var y = this.get('y');
 			var dx;
@@ -80,17 +80,18 @@ define(function (require, exports, module) {
 			var newState = (oldState + 1) % 4;
 			var oldBox = this.get('box');
 			var newBox = [];
+			var row, col;
 
 			// Rotate
-			for (var row = 0; row < oldBox.length; row++) {
+			for (row = 0; row < oldBox.length; row += 1) {
 				newBox[row] = [];
-				for (var col = 0; col < oldBox[row].length; col++) {
+				for (col = 0; col < oldBox[row].length; col += 1) {
 					newBox[row][col] = oldBox[oldBox.length - col - 1][row];
 				}
 			}
 
 			// Apply the offsets
-			for (var col = 0; col < 5; col++) {
+			for (col = 0; col < 5; col += 1) {
 				dx = offsets[oldState][col][0] - offsets[newState][col][0];
 				dy = offsets[oldState][col][1] - offsets[newState][col][1];
 
@@ -100,7 +101,7 @@ define(function (require, exports, module) {
 						state: newState,
 						x: x+dx,
 						y: y+dy
-					})
+					});
 					return;
 				}
 			}
@@ -119,18 +120,18 @@ define(function (require, exports, module) {
 		move: function (dx, dy) {
 			var x = this.get('x');
 			var y = this.get('y');
-			var box = this.get('box')
+			var box = this.get('box');
 
 			if (this._inBounds(box, x+dx, y+dy)) {
 				this.set({
 					x: x + dx,
 					y: y + dy
-				})
+				});
 				x += dx;
 				y += dy;
 			}
 
-			return { 'x': x, 'y': y }
+			return { x:x, y:y };
 		},
 
 
@@ -139,7 +140,6 @@ define(function (require, exports, module) {
 		// Moves the tetrimino as far down as it can go
 
 		drop: function () {
-			var x = this.get('x');
 			var y = this.get('y');
 
 			var newpos = this.move(0, 1);
@@ -167,8 +167,8 @@ define(function (require, exports, module) {
 
 		_getCoordinates: function (box, x, y) {
 			var coords = [];
-			for (var dy = 0; dy < box.length; dy++) {
-				for (var dx = 0; dx < box[dy].length; dx++) {
+			for (var dy = 0; dy < box.length; dy += 1) {
+				for (var dx = 0; dx < box[dy].length; dx += 1) {
 					if (box[dy][dx] !== null) {
 						coords.push([x+dx, y+dy]);
 					}
@@ -180,7 +180,7 @@ define(function (require, exports, module) {
 
 		// Helper methods
 		// --------------
-		
+
 		// Returns false if the Tetrimino cannot be positioned at the given
 		// coordinates with the given box. Uses the public `bounds` attribute
 		// function to do the actuall bounds checking.
@@ -198,16 +198,18 @@ define(function (require, exports, module) {
 			var y = this.get('y');
 			var state = this.get('state');
 			var type = this.get('type');
-			var str = "[Tetrimino: " + type + ' (' + x + ',' + y + ') ' + state + ']'
+			var i, j;
+
+			var str = "[Tetrimino: " + type + ' (' + x + ',' + y + ') ' + state + ']';
 
 			if (showBox) {
 				str += '\n+';
-				for (var i = 0; i < box[0].length; i++) str += '-';
-				str += '+'
+				for (i = 0; i < box[0].length; i += 1) str += '-';
+				str += '+';
 
-				for (var i = 0; i < box.length; i++) {
+				for (i = 0; i < box.length; i += 1) {
 					str += "\n|";
-					for (var j = 0; j < box[i].length; j++) {
+					for (j = 0; j < box[i].length; j += 1) {
 						if (box[i][j] == 'x') str += 'X';
 						else str += ' ';
 					}
@@ -215,13 +217,13 @@ define(function (require, exports, module) {
 				}
 
 				str += '\n+';
-				for (var i = 0; i < box[0].length; i++) str += '-';
+				for (i = 0; i < box[0].length; i += 1) str += '-';
 				str += '+';
 			}
 
 			return str;
 		}
-	})
+	});
 
 
 	// Default attributes for specific Tetrimino types
@@ -331,5 +333,5 @@ define(function (require, exports, module) {
 			],
 			color: "Cyan"
 		}
-	}
-})
+	};
+});

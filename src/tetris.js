@@ -1,16 +1,16 @@
 //     Tetris.js - A Tetris clone for HTML5
 //     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
-//     
+//
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
 //     the Free Software Foundation, either version 3 of the License, or
 //     (at your option) any later version.
-//     
+//
 //     This program is distributed in the hope that it will be useful,
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-//     
+//
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -25,46 +25,46 @@ define(function (require, exports, module) {
 	var TetrisView = require('tetris_view');
 
 
-	 // The board on which tetris is played. Extends `Clock`.
-	 //
-	 // A matrix manages its own queue of Tetriminos and hold slots.
-	 // It exposes the API for moving pieces around.
-	 // 
-	 // A Tetris instance acts just like a clock, where the clock states
-	 // correspond to gameplay.
-	 // 
-	 //
-	 // Events
-	 // ------
-	 // - `clear` (rows): Triggered when a line or lines are cleared. Gets
-	 //   passed an array of line numbers cleared.
-	 // - `lock` (coords): Triggered when the in play tetrimino becomes locked
-	 //   in place. Gets passed an array of [x, y] coordinate pairs for the
-	 //   resulting location of each block of the Tetrimino
-	 // - `rotate` (state): Triggered when the in play tetrimino rotates.
-	 // - `update` (x, y, width, height): Triggered when the internal matirx
-	 //   has updated passing a the coordinates of the bounding box of the
-	 //   updated area.
-	 // - `score` (current score, multiplier): Triggered when the user scores
-	 // - `spawn` (state): Triggered when a new Tetrimino is spawned.
-	 // - `restart` (state): Triggered when the game is restarted
-	 // 
-	 //
-	 // Attributes
-	 // ----------
-	 // - `controler` (TetrisControl): The controller of the game.
-	 // - `current` (Tetrimino): The current Tetrimino being played.
-	 // - `dropLock` (Boolean): If the current Tetrimino is being locked from
-	 //   autodroping.
-	 // - `hold` (Tetrimino): The terimino being held. Starts as `null`.
-	 // - `matrix` (2D Array): The game board as [row][col] from top-left to
-	 //   bottom-right. A standard game of Tetris is 10 x 22. The top two rows
-	 //   should not be shown to the user.
-	 // - `queue` (TetriminoFactory): The Tetriminos to be played.
-	 // - `score_keeper` (ScoreKeeper): The logic for keeping up with the score.
-	 // - `view` (TetrisView): The view of the game.
+	// The board on which tetris is played. Extends `Clock`.
+	//
+	// A matrix manages its own queue of Tetriminos and hold slots.
+	// It exposes the API for moving pieces around.
+	//
+	// A Tetris instance acts just like a clock, where the clock states
+	// correspond to gameplay.
+	//
+	//
+	// Events
+	// ------
+	// - `clear` (rows): Triggered when a line or lines are cleared. Gets
+	//   passed an array of line numbers cleared.
+	// - `lock` (coords): Triggered when the in play tetrimino becomes locked
+	//   in place. Gets passed an array of [x, y] coordinate pairs for the
+	//   resulting location of each block of the Tetrimino
+	// - `rotate` (state): Triggered when the in play tetrimino rotates.
+	// - `update` (x, y, width, height): Triggered when the internal matirx
+	//   has updated passing a the coordinates of the bounding box of the
+	//   updated area.
+	// - `score` (current score, multiplier): Triggered when the user scores
+	// - `spawn` (state): Triggered when a new Tetrimino is spawned.
+	// - `restart` (state): Triggered when the game is restarted
+	//
+	//
+	// Attributes
+	// ----------
+	// - `controler` (TetrisControl): The controller of the game.
+	// - `current` (Tetrimino): The current Tetrimino being played.
+	// - `dropLock` (Boolean): If the current Tetrimino is being locked from
+	//   autodroping.
+	// - `hold` (Tetrimino): The terimino being held. Starts as `null`.
+	// - `matrix` (2D Array): The game board as [row][col] from top-left to
+	//   bottom-right. A standard game of Tetris is 10 x 22. The top two rows
+	//   should not be shown to the user.
+	// - `queue` (TetriminoFactory): The Tetriminos to be played.
+	// - `scoreKeeper` (ScoreKeeper): The logic for keeping up with the score.
+	// - `view` (TetrisView): The view of the game.
 
-	var Tetris = module.exports = Clock.extend({
+	module.exports = Clock.extend({
 
 		width: 10,
 		height: 22,
@@ -72,15 +72,15 @@ define(function (require, exports, module) {
 
 
 		attributes: {
-			controler: null,     // Controler of the game
-			current: null,       // Current Tetrimino in play
-			delay: 300,          // Miliseconds before autodrop, inherited from Clock
-			dropLock: false,     // Prevents autodrop, enable with #.set
-			hold: null,          // Tetrimino on hold
-			matrix: null,        // Game area
-			queue: null,         // Queue of upcoming Tetriminos
-			score_keeper: null,  // Keeps track of the score of this game
-			view: null           // View of this game
+			controler: null,    // Controler of the game
+			current: null,      // Current Tetrimino in play
+			delay: 300,         // Miliseconds before autodrop, inherited from Clock
+			dropLock: false,    // Prevents autodrop, enable with #.set
+			hold: null,         // Tetrimino on hold
+			matrix: null,       // Game area
+			queue: null,        // Queue of upcoming Tetriminos
+			scoreKeeper: null, // Keeps track of the score of this game
+			view: null          // View of this game
 		},
 
 
@@ -90,30 +90,30 @@ define(function (require, exports, module) {
 			var queue = new TetriminoFactory({ bounds: this._bounds.bind(this) });
 			var view = new TetrisView({ game: this });
 			var controler = new TetrisControl({ game: this });
-			var score_keeper = new ScoreKeeper({ game: this });
+			var scoreKeeper = new ScoreKeeper({ game: this });
 
 			this.set({
 				'controler': controler,
 				'delay': this.initialDelay,
 				'matrix': this._getEmptyMatrix(),
 				'queue': queue,
-				'score_keeper': score_keeper,
+				'scoreKeeper': scoreKeeper,
 				'view': view
-			})
+			});
 
-			// Pass the score event up from the score_keeper,
+			// Pass the score event up from the scoreKeeper,
 			// also increase dificulty
-			score_keeper.on('score', function (score, multiplier) {
+			scoreKeeper.on('score', function (score, multiplier) {
 				var delay = this.get('delay');
-				delay *= 99/100
+				delay *= 99/100;
 				this.set({'delay': delay});
 				this.trigger('score', score, multiplier);
 			}.bind(this));
 
 			// Autodrop
 			this.on('downtick', function () {
-				this.drop()
-			}.bind(this))
+				this.drop();
+			}.bind(this));
 
 			// Initialize the controler
 			controler.delegateEvents();
@@ -122,13 +122,13 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.left(), t.right(), t.down()
-		 // -----------------------------
-		 // Move the current Tetrimino in the desired direction
+		// t.left(), t.right(), t.down()
+		// -----------------------------
+		// Move the current Tetrimino in the desired direction
 
-		left:  function () {return this._move(-1, 0)},
-		right: function () {return this._move(1, 0)},
-		down:  function () {return this._move(0, 1)},
+		left:  function () {return this._move(-1, 0); },
+		right: function () {return this._move(1, 0); },
+		down:  function () {return this._move(0, 1); },
 		_move: function (dx, dy) {
 			var current = this.get('current');
 			if (current) {
@@ -153,9 +153,9 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.rotate()
-		 // ----------
-		 // Rotate the current Tetrimino, performing wall-kicks and spins.
+		// t.rotate()
+		// ----------
+		// Rotate the current Tetrimino, performing wall-kicks and spins.
 
 		rotate: function () {
 			var current = this.get('current');
@@ -175,21 +175,20 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.drop(hard, nolock)
-		 // --------------------
-		 // Drops the current Tetrimino. If it can't move down, it is locked.
-		 //
-		 // ### Params
-		 // - `hard` (Boolean): If true, drops all the way down, else drops one line.
-		 // - `nolock` (Boolean): If true, prevents the Tetrimino from being locked.
+		// t.drop(hard, nolock)
+		// --------------------
+		// Drops the current Tetrimino. If it can't move down, it is locked.
+		//
+		// ### Params
+		// - `hard` (Boolean): If true, drops all the way down, else drops one line.
+		// - `nolock` (Boolean): If true, prevents the Tetrimino from being locked.
 
 		drop: function (hard, nolock) {
-			var matrix = this.get('matrix');
 			var current = this.get('current');
 			var dropLock = this.get('dropLock');
 
 			if (current && !dropLock) {
-				var startpos = { 'x': current.get('x'), 'y': current.get('y') }
+				var startpos = { 'x': current.get('x'), 'y': current.get('y') };
 				var newpos;
 				var width;
 				var height;
@@ -197,7 +196,7 @@ define(function (require, exports, module) {
 				if (hard) {
 					newpos = startpos = current.drop();
 				}
-				
+
 				newpos = this.down();
 				if (newpos.y == startpos.y && !nolock) {
 					this.lock();
@@ -211,21 +210,21 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.hold()
-		 // --------
-		 // Puts the current piece on hold.
+		// t.hold()
+		// --------
+		// Puts the current piece on hold.
 
 		hold: function () {
 			var current = this.get('current');
 			var hold = this.get('hold');
 
 			if (!this._holdLock && current) {
-				current.initialize(); // Reset to initial values
+				current.initialize();// Reset to initial values
 				if (hold) {
 					this.set({
 						'current': hold,
 						'hold': current
-					})
+					});
 				} else {
 					this.set({ 'hold': current });
 					this.spawn();
@@ -236,9 +235,9 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.lock()
-		 // --------
-		 // Lock the current Tetrimino in place.
+		// t.lock()
+		// --------
+		// Lock the current Tetrimino in place.
 
 		lock: function () {
 			var current = this.get('current');
@@ -249,25 +248,23 @@ define(function (require, exports, module) {
 				var coords = current.getCoordinates();
 				var x;
 				var y;
-				for (var i = 0; i < coords.length; i++) {
+				for (var i = 0; i < coords.length; i += 1) {
 					x = coords[i][0];
 					y = coords[i][1];
 					matrix[y][x] = color;
 				}
-				this.set({current: null})
+				this.set({current: null});
+
+				this._holdLock = false;
+				this.trigger('lock', coords);
+				this.clearLines();
 			}
-
-			this._holdLock = false;
-
-			this.trigger('lock', coords);
-
-			this.clearLines();
 		},
 
 
-		 // t.spawn()
-		 // ---------
-		 // Spawn the next Tetrimino.
+		// t.spawn()
+		// ---------
+		// Spawn the next Tetrimino.
 
 		spawn: function () {
 			var queue = this.get('queue');
@@ -283,38 +280,38 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.restart()
-		 // -----------
-		 // Restarts the game. The game will be in the "stopped" state.
+		// t.restart()
+		// -----------
+		// Restarts the game. The game will be in the "stopped" state.
 
 		restart: function () {
 			var queue = new TetriminoFactory({ bounds: this._bounds.bind(this) });
-			var score_keeper = this.get('score_keeper');
+			var scoreKeeper = this.get('scoreKeeper');
 
-			score_keeper.set({
+			scoreKeeper.set({
 				'combo': 0,
 				'dryspell': 0,
 				'score': 0
-			})
+			});
 
 			this.set({
 				'delay': this.initialDelay,
 				'matrix': this._getEmptyMatrix(),
 				'queue': queue
-			})
-			
+			});
+
 			Clock.prototype.restart.call(this);
 			this.spawn();
 		},
 
 
-		 // t.clearLines()
-		 // --------------
-		 // Checks if any rows are full and clears them if so.
+		// t.clearLines()
+		// --------------
+		// Checks if any rows are full and clears them if so.
 
 		clearLines: function () {
 			var rows = [];
-			var y = 2; // We start at row 2 because 0 and 1 are off canvas
+			var y = 2;// We start at row 2 because 0 and 1 are off canvas
 			var matrix = this.get('matrix');
 
 			this._clearLines(y, rows, matrix);
@@ -327,15 +324,17 @@ define(function (require, exports, module) {
 		_clearLines: function (y, rows, matrix) {
 			if (y >= matrix.length) return;
 
-			for (var i = 0; i < this.width; i++) {
+			var i, j;
+
+			for (i = 0; i < this.width; i += 1) {
 				if (matrix[y][i] === null) {
 					return this._clearLines(y + 1, rows, matrix);
 				}
 			}
 
 			rows.push(y);
-			for (var i = y; i > 0; i--) {
-				for (var j = 0; j < this.width; j++) {
+			for (i = y; i > 0; i -= 1) {
+				for (j = 0; j < this.width; j += 1) {
 					matrix[i][j] = matrix[i-1][j];
 				}
 			}
@@ -344,9 +343,9 @@ define(function (require, exports, module) {
 		},
 
 
-		 // t.resetDropTime()
-		 // -----------------
-		 // Resets the time until the next autodrop
+		// t.resetDropTime()
+		// -----------------
+		// Resets the time until the next autodrop
 
 		resetDropTime: function () {
 			Clock.prototype._stop.call(this);
@@ -357,10 +356,10 @@ define(function (require, exports, module) {
 		// Returns a 2D array of null elements
 
 		_getEmptyMatrix: function () {
-			var matrix = []
-			for (var row = 0; row < this.height; row++) {
+			var matrix = [];
+			for (var row = 0; row < this.height; row += 1) {
 				matrix[row] = [];
-				for (var col = 0; col < this.width; col++) {
+				for (var col = 0; col < this.width; col += 1) {
 					matrix[row][col] = null;
 				}
 			}
@@ -390,7 +389,7 @@ define(function (require, exports, module) {
 					|| (matrix[y][x] !== null)) {
 					ret = false;
 				}
-			})
+			});
 			return ret;
 		},
 
@@ -399,33 +398,35 @@ define(function (require, exports, module) {
 			var matrix = this.get('matrix');
 			var current = this.get('current');
 			var coords;
+			var i, j, k;
+
 			var str = '[Tetris: ';
 
 			if (current) {
-				coords = current.getCoordinates()
+				coords = current.getCoordinates();
 				str += current.toString();
 				str += ']';
 			} else {
 				str += 'null]';
 			}
 
-			
+
 			if (showMatrix) {
 				var mark = 'X';
 				str += '\n+';
-				for (var i = 0; i < matrix[0].length; i++) str += '-';
-				str += '+'
+				for (i = 0; i < matrix[0].length; i += 1) str += '-';
+				str += '+';
 
-				for (var i = 0; i < matrix.length; i++) {
+				for (i = 0; i < matrix.length; i += 1) {
 					str += "\n|";
-					for (var j = 0; j < matrix[i].length; j++) {
+					for (j = 0; j < matrix[i].length; j += 1) {
 						if (matrix[i][j] !== null) {
 							mark = 'X';
 						} else {
 							mark = ' ';
 						}
 						if (coords) {
-							for (var k = 0; k < coords.length; k++) {
+							for (k = 0; k < coords.length; k += 1) {
 								if (coords[k][0] == j && coords[k][1] == i) {
 									mark = 'O';
 								}
@@ -437,13 +438,13 @@ define(function (require, exports, module) {
 				}
 
 				str += '\n+';
-				for (var i = 0; i < matrix[0].length; i++) str += '-';
+				for (i = 0; i < matrix[0].length; i += 1) str += '-';
 				str += '+';
 			}
 
 			return str;
 		}
 
-	})
+	});
 
-})
+});

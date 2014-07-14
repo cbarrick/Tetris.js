@@ -1,16 +1,16 @@
 //     Tetris.js - A Tetris clone for HTML5
 //     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
-//     
+//
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
 //     the Free Software Foundation, either version 3 of the License, or
 //     (at your option) any later version.
-//     
+//
 //     This program is distributed in the hope that it will be useful,
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-//     
+//
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -32,7 +32,7 @@ define(function (require, exports, module) {
 	// Subclassing `Model` involves calling `Model.extend` with a prototype
 	// extension. Members of the extension override members of the same name
 	// in the super prototype.
-	// 
+	//
 	// There are several notable prototype members that subclasses can use:
 	//
 	// - **constructor / initialize**: The default constructor returned by
@@ -60,7 +60,7 @@ define(function (require, exports, module) {
 		this.attributes = util.clone(this.attributes);
 		this.set(attributes);
 		this.initialize(options);
-	}
+	};
 
 
 	Model.prototype = util.extend(Object.create(EventEmitter.prototype), {
@@ -69,7 +69,9 @@ define(function (require, exports, module) {
 
 		constructor: Model,
 
-		initialize: function (options) {},
+		initialize: function () {
+			// no-op
+		},
 
 
 		// m.set(values), m.set(key, value)
@@ -137,7 +139,7 @@ define(function (require, exports, module) {
 			clone.attributes = util.clone(this.attributes);
 			return clone;
 		}
-	})
+	});
 
 
 	// Model.extend(extension)
@@ -151,11 +153,11 @@ define(function (require, exports, module) {
 	//   any members of the same name in the parent class.
 
 	Model.extend = function (extension) {
-		var newCtor = function () {Model.apply(this, arguments)};
+		var newCtor = function () { Model.apply(this, arguments); };
 		newCtor.prototype = Object.create(this.prototype);
 		util.extend(newCtor.prototype, extension);
 		newCtor.extend = this.extend;
 		return newCtor;
-	}
+	};
 
-})
+});

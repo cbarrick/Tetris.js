@@ -2,16 +2,19 @@
 
 
 require.config({
-	baseUrl: 'src'
-})
+	baseUrl: 'src',
+	paths: {
+		'keys': '../lib/keys/src/keys'
+	}
+});
 
 
-require(['tetris'], function (Tetris, DomControl) {
+require(['tetris'], function (Tetris) {
 	var container = document.getElementById('game');
-	window.t = new Tetris();
+	var t = new Tetris();
 
 	var view = t.get('view');
 
 	view.attach(container);
 	view.render();
-})
+});

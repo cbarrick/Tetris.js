@@ -1,16 +1,16 @@
 //     Tetris.js - A Tetris clone for HTML5
 //     Copyright (C) 2014  Chris Barrick <cbarrick1@gmail.com>
-//     
+//
 //     This program is free software: you can redistribute it and/or modify
 //     it under the terms of the GNU General Public License as published by
 //     the Free Software Foundation, either version 3 of the License, or
 //     (at your option) any later version.
-//     
+//
 //     This program is distributed in the hope that it will be useful,
 //     but WITHOUT ANY WARRANTY; without even the implied warranty of
 //     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //     GNU General Public License for more details.
-//     
+//
 //     You should have received a copy of the GNU General Public License
 //     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -21,17 +21,17 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
-	 // Handles the user input and controls a Tetris game. Extends `Model`.
-	 //
-	 // This file is tightly coupled to the `index.xhtml` file. This control
-	 // expects the DOM to be layed out as in that file.
-	 //
-	 // Attributes
-	 // ----------
-	 // - `document` (DOM document): The DOM tree of the page.
-	 // - `game` (Tetris): The game being controlled. Defaults to null.
+	// Handles the user input and controls a Tetris game. Extends `Model`.
+	//
+	// This file is tightly coupled to the `index.xhtml` file. This control
+	// expects the DOM to be layed out as in that file.
+	//
+	// Attributes
+	// ----------
+	// - `document` (DOM document): The DOM tree of the page.
+	// - `game` (Tetris): The game being controlled. Defaults to null.
 
-	var TetrisControl = module.exports = Model.extend({
+	module.exports = Model.extend({
 
 		das: 200, // Delayed Auto Shift: the amount of time before auto repeat
 		arr: 45,  // Auto Repeat Rate: the amount of time between auto repeats
@@ -39,7 +39,7 @@ define(function (require, exports, module) {
 
 		attributes: {
 			document: document, // The DOM tree being controled.
-			game: null          // The underlying game being controled.
+			game: null          // The underlying game. Must be set by the constructor.
 		},
 
 
@@ -51,9 +51,9 @@ define(function (require, exports, module) {
 		},
 
 
-		 // tc.delegateEvents()
-		 // -------------------
-		 // Sets up all necessary event handlers.
+		// tc.delegateEvents()
+		// -------------------
+		// Sets up all necessary event handlers.
 
 		delegateEvents: function () {
 			var game = this.get('game');
@@ -61,41 +61,39 @@ define(function (require, exports, module) {
 			var menu = document.getElementById('menu');
 			var nextBtns = menu.getElementsByClassName('next-btn');
 			var playBtns = menu.getElementsByClassName('play-btn');
-			var game = this.get('game');
-			var view = game.get('view');
-			var canvas = view.get('el');
+			var i;
 
 			if (game) {
 				game.on('lock', function (coords) {
-					for (var i = coords.length - 1; i >= 0; i--) {
+					for (i = coords.length - 1; i >= 0; i -= 1) {
 						if (coords[i][1] < 2) {
 							game.stop();
 							return;
 						}
 					}
 					game.spawn();
-				})
+				});
 
-				game.on('score', function (score, multiplier) {
+				game.on('score', function (score) {
 					var document = this.get('document');
 					var scores = document.getElementsByClassName('score-value');
-					for (var i = scores.length - 1; i >= 0; i-- ) {
+					for (i = scores.length - 1; i >= 0; i -= 1) {
 						scores[i].innerHTML = '';
 						if (score < 1000) scores[i].innerHTML += '0';
 						if (score < 100) scores[i].innerHTML += '0';
 						if (score < 10) scores[i].innerHTML += '0';
 						scores[i].innerHTML += score;
 					}
-				}.bind(this))
+				}.bind(this));
 
 				game.on('stop', function () {
 					this.quitGame();
-				}.bind(this))
+				}.bind(this));
 
 				game.on('start', function () {
 					var document = this.get('document');
 					var scores = document.getElementsByClassName('score-value');
-					for (var i = scores.length - 1; i >= 0; i-- ) {
+					for (i = scores.length - 1; i >= 0; i -=1) {
 						scores[i].innerHTML = '0000';
 					}
 				}.bind(this));
@@ -104,37 +102,35 @@ define(function (require, exports, module) {
 			window.addEventListener('keydown', this.onKeydown, false);
 			window.addEventListener('keyup', this.onKeyup, false);
 
-			for (var i = nextBtns.length - 1; i >= 0; i--) {
+			for (i = nextBtns.length - 1; i >= 0; i -= 1) {
 				nextBtns[i].addEventListener('click', this.openInstructions, false);
 			}
 
-			for (var i = playBtns.length - 1; i >= 0; i--) {
+			for (i = playBtns.length - 1; i >= 0; i -= 1) {
 				playBtns[i].addEventListener('click', this.startGame, false);
 			}
 		},
 
 
-		 // tc.undelegateEvents()
-		 // ---------------------
-		 // Removes all event handlers set with `delegateEvents`.
+		// tc.undelegateEvents()
+		// ---------------------
+		// Removes all event handlers set with `delegateEvents`.
 
 		undelegateEvents: function () {
 			var document = this.get('document');
 			var menu = document.getElementById('menu');
 			var nextBtns = menu.getElementsByClassName('next-btn');
 			var playBtns = menu.getElementsByClassName('play-btn');
-			var game = this.get('game');
-			var view = game.get('view');
-			var canvas = view.get('el');
+			var i;
 
 			window.removeEventListener('keydown', this.onKeydown, false);
 			window.removeEventListener('keyup', this.onKeyup, false);
 
-			for (var i = nextBtns.length - 1; i >= 0; i--) {
+			for (i = nextBtns.length - 1; i >= 0; i -= 1) {
 				nextBtns[i].removeEventListener('click', this.openInstructions, false);
 			}
 
-			for (var i = playBtns.length - 1; i >= 0; i--) {
+			for (i = playBtns.length - 1; i >= 0; i -= 1) {
 				playBtns[i].removeEventListener('click', this.startGame, false);
 			}
 		},
@@ -159,7 +155,7 @@ define(function (require, exports, module) {
 						game.resetDropTime();
 						game.rotate();
 					}
-				}
+				};
 				repeat = false;
 
 			} else if ('Down' === event.keyIdentifier) {
@@ -168,7 +164,7 @@ define(function (require, exports, module) {
 						game.resetDropTime();
 						game.down();
 					}
-				}
+				};
 
 			} else if ('Left' === event.keyIdentifier) {
 				action = function () {
@@ -176,7 +172,7 @@ define(function (require, exports, module) {
 						game.resetDropTime();
 						game.left();
 					}
-				}
+				};
 
 			} else if ('Right' === event.keyIdentifier) {
 				action = function () {
@@ -184,14 +180,14 @@ define(function (require, exports, module) {
 						game.resetDropTime();
 						game.right();
 					}
-				}
+				};
 
 			} else if ('U+0020' === event.keyIdentifier) {
 				action = function () {
 					if (gameState === 'running') {
 						game.drop(true);
 					}
-				}
+				};
 				repeat = false;
 
 			} else if ('Shift' === event.keyIdentifier) {
@@ -199,17 +195,17 @@ define(function (require, exports, module) {
 					if (gameState === 'running') {
 						game.hold();
 					}
-				}
+				};
 				repeat = false;
 
 			} else if ('U+001B' === event.keyIdentifier) {
 				action = function () {
 					if (gameState === 'paused') {
-						this.startGame()
+						this.startGame();
 					} else {
 						this.pauseGame();
 					}
-				}
+				};
 				action = action.bind(this);
 
 			} else {
@@ -228,19 +224,19 @@ define(function (require, exports, module) {
 							clearInterval(this._keyInterval);
 							this._keyInterval = setInterval(action, this.arr);
 						}
-					}.bind(this), this.das)
+					}.bind(this), this.das);
 				}
 
 				setTimeout(function() {
 					this._throttled = false;
-				}.bind(this), this.arr)
+				}.bind(this), this.arr);
 			}
 		},
 
 
 		// Handles the keyup event
 
-		onKeyup: function (event) {
+		onKeyup: function () {
 			this._debounced = false;
 			clearInterval(this._keyInterval);
 			this._keyInterval = false;
@@ -248,7 +244,7 @@ define(function (require, exports, module) {
 
 
 		// Transitions from the intro panel to the instructions panel.
-		// Assumes that the menu and into are open.
+		// Assumes that the menu and intro are open.
 
 		openInstructions: function () {
 			var document = this.get('document');
@@ -272,8 +268,8 @@ define(function (require, exports, module) {
 			var opened = document.getElementsByClassName('open');
 			var escAction = document.getElementById('esc-action');
 
-			for (var j = opened.length - 1; j >= 0; j--) {
-				opened[j].className = opened[j].className.replace(/\s*\bopen\b\s*/g, '');
+			for (var i = opened.length - 1; i >= 0; i -= 1) {
+				opened[i].className = opened[i].className.replace(/\s*\bopen\b\s*/g, '');
 			}
 
 			scorePanel.className += ' open';
@@ -289,7 +285,6 @@ define(function (require, exports, module) {
 			var game = this.get('game');
 			var document = this.get('document');
 			var menu = document.getElementById('menu');
-			var scorePanel = document.getElementById('score');
 			var escAction = document.getElementById('esc-action');
 
 			menu.className += ' open';
@@ -316,6 +311,6 @@ define(function (require, exports, module) {
 			game.restart();
 		}
 
-	})
+	});
 
-})
+});

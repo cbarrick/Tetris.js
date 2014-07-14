@@ -149,7 +149,7 @@ define(function (require, exports, module) {
 			var valid = true;
 			var action;
 
-			if ('Up' === event.keyIdentifier) {
+			if ('Up' === event.key) {
 				action = function () {
 					if (gameState === 'running') {
 						game.resetDropTime();
@@ -158,7 +158,7 @@ define(function (require, exports, module) {
 				};
 				repeat = false;
 
-			} else if ('Down' === event.keyIdentifier) {
+			} else if ('Down' === event.key) {
 				action = function () {
 					if (gameState === 'running') {
 						game.resetDropTime();
@@ -166,7 +166,7 @@ define(function (require, exports, module) {
 					}
 				};
 
-			} else if ('Left' === event.keyIdentifier) {
+			} else if ('Left' === event.key) {
 				action = function () {
 					if (gameState === 'running') {
 						game.resetDropTime();
@@ -174,7 +174,7 @@ define(function (require, exports, module) {
 					}
 				};
 
-			} else if ('Right' === event.keyIdentifier) {
+			} else if ('Right' === event.key) {
 				action = function () {
 					if (gameState === 'running') {
 						game.resetDropTime();
@@ -182,7 +182,8 @@ define(function (require, exports, module) {
 					}
 				};
 
-			} else if ('U+0020' === event.keyIdentifier) {
+			} else if ('Spacebar' === event.key
+			            || 32 === event.keyCode) {
 				action = function () {
 					if (gameState === 'running') {
 						game.drop(true);
@@ -190,7 +191,7 @@ define(function (require, exports, module) {
 				};
 				repeat = false;
 
-			} else if ('Shift' === event.keyIdentifier) {
+			} else if ('Shift' === event.key) {
 				action = function () {
 					if (gameState === 'running') {
 						game.hold();
@@ -198,7 +199,7 @@ define(function (require, exports, module) {
 				};
 				repeat = false;
 
-			} else if ('U+001B' === event.keyIdentifier) {
+			} else if ('Esc' === event.key) {
 				action = function () {
 					if (gameState === 'paused') {
 						this.startGame();

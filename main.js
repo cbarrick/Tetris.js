@@ -2,10 +2,7 @@
 
 
 require.config({
-	baseUrl: 'src',
-	paths: {
-		'keys': '../lib/keys/src/keys'
-	}
+	baseUrl: 'src'
 });
 
 

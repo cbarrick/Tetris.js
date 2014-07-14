@@ -8,6 +8,6 @@
 [submodule "test/lib/mocha"]
 	path = test/lib/mocha
 	url = https://github.com/visionmedia/mocha.git
-[submodule "lib/keys"]
-	path = lib/keys
-	url = https://github.com/bitwalker/keys.js.git
+[submodule "lib/keyboard-event-pollyfill"]
+	path = lib/keyboard-event-pollyfill
+	url = https://github.com/termi/DOM-Keyboard-Event-Level-3-polyfill.git

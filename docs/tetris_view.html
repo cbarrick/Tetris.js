@@ -93,29 +93,30 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;
 
-	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);
-	<span class="hljs-keyword">var</span> util = <span class="hljs-built_in">require</span>(<span class="hljs-string">'util'</span>);</pre></div></div>
+	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);</pre></div></div>
             
         </li>
         
@@ -126,7 +127,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Canvas logic for drawing a game of Tetris. Extends <code>Model</code>.</p>
+              <p>Creates and manages a canvas to show the game.</p>
 <h2 id="attributes">Attributes</h2>
 
             </div>
@@ -154,7 +155,8 @@ blocks of the Tetriminos.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> TetrisView = module.exports = Model.extend({
+            <div class="content"><div class='highlight'><pre>
+	module.exports = Model.extend({
 
 		className: <span class="hljs-string">'tetris-canvas'</span>,
 		detail: <span class="hljs-number">50</span>, <span class="hljs-comment">// higher is better</span>
@@ -173,6 +175,7 @@ blocks of the Tetriminos.
 			<span class="hljs-keyword">var</span> el = document.createElement(<span class="hljs-string">'canvas'</span>);
 			<span class="hljs-keyword">var</span> pen = el.getContext(<span class="hljs-string">'2d'</span>);
 			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> root = game.get(<span class="hljs-string">'root'</span>);
 
 			el.className = <span class="hljs-keyword">this</span>.className;
 			el.width = game.width * <span class="hljs-keyword">this</span>.detail;
@@ -181,12 +184,9 @@ blocks of the Tetriminos.
 			<span class="hljs-keyword">this</span>.set({
 				<span class="hljs-string">'el'</span>: el,
 				<span class="hljs-string">'pen'</span>: pen
-			})
+			});
 
-			game.on(<span class="hljs-string">'update'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
-				<span class="hljs-keyword">this</span>.render();
-			}.bind(<span class="hljs-keyword">this</span>))
-		},</pre></div></div>
+			game.on(<span class="hljs-string">'update'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span></pre></div></div>
             
         </li>
         
@@ -197,9 +197,15 @@ blocks of the Tetriminos.
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <h2 id="tetrisview-prototype-attach-parent-">TetrisView.prototype.attach(parent)</h2>
+              <p>TODO: Only render the part being updated</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>				<span class="hljs-keyword">this</span>.render();
+			}.bind(<span class="hljs-keyword">this</span>));
+
+			root.appendChild(el);
+		},</pre></div></div>
             
         </li>
         
@@ -210,19 +216,9 @@ blocks of the Tetriminos.
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>A convenience method to append the canvas as a child of a parent
-DOM node.</p>
-<h3 id="params">Params</h3>
-<ul>
-<li><code>parent</code> (DOM Node): The element under which to attach the canvas.</li>
-</ul>
+              <h2 id="tetrisview-prototype-attach-parent-">TetrisView.prototype.attach(parent)</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>		attach: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(parent)</span> {</span>
-			<span class="hljs-keyword">var</span> canvas = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'el'</span>);
-			parent.appendChild(canvas);
-		},</pre></div></div>
             
         </li>
         
@@ -233,9 +229,20 @@ DOM node.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <h2 id="tetrisview-prototype-render-x-y-width-height-">TetrisView.prototype.render([x, [y, [width, [height]]]])</h2>
+              <p>A convenience method to append the canvas as a child of a parent
+DOM node.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li><code>parent</code> (DOM Node): The element under which to attach the canvas.</li>
+</ul>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+		attach: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(parent)</span> {</span>
+			<span class="hljs-keyword">var</span> canvas = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'el'</span>);
+			parent.appendChild(canvas);
+		},</pre></div></div>
             
         </li>
         
@@ -246,8 +253,21 @@ DOM node.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
+              <h2 id="tetrisview-prototype-render-x-y-width-height-">TetrisView.prototype.render([x, [y, [width, [height]]]])</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
               <p>Renders the current state of the game for the region specified.
-The units are in terms of game &quot;blocks&quot;, not pixles.</p>
+The units are in terms of game “blocks”, not pixles.</p>
 <h3 id="params">Params</h3>
 <ul>
 <li>The arguments are the bounding box of the the area to draw in
@@ -256,7 +276,8 @@ game units. They default to drawing the whole board.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		render: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		render: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
 			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
 			<span class="hljs-keyword">var</span> matrix = game.get(<span class="hljs-string">'matrix'</span>);
 			<span class="hljs-keyword">var</span> fillStyle;
@@ -271,18 +292,18 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Note that we draw the top two rows above the top of the canvas</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = y; i &lt; y + height; i++) {
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = x; j &lt; x + width; j++) {
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = y; i &lt; y + height; i += <span class="hljs-number">1</span>) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = x; j &lt; x + width; j += <span class="hljs-number">1</span>) {
 					<span class="hljs-keyword">if</span> ((j &gt;= <span class="hljs-number">0</span>) &amp;&amp; (i &gt;= <span class="hljs-number">2</span>) &amp;&amp; matrix[i] &amp;&amp; matrix[i][j]) {
 						fillStyle = matrix[i][j];
 						<span class="hljs-keyword">this</span>.drawBlock(j, i, fillStyle);
@@ -297,49 +318,15 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-9">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
-              </div>
-              <h2 id="tetrisview-prototype-drawcurrent-">TetrisView.prototype.drawCurrent()</h2>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Draws the current Tetrimino in play.</p>
+              <h2 id="tetrisview-prototype-drawcurrent-">TetrisView.prototype.drawCurrent()</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>		drawCurrent: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
-			<span class="hljs-keyword">var</span> current = game.get(<span class="hljs-string">'current'</span>);
-			<span class="hljs-keyword">if</span> (current) {
-				<span class="hljs-keyword">var</span> x = current.get(<span class="hljs-string">'x'</span>);
-				<span class="hljs-keyword">var</span> y = current.get(<span class="hljs-string">'y'</span>);
-				<span class="hljs-keyword">var</span> width = current.get(<span class="hljs-string">'width'</span>);
-				<span class="hljs-keyword">var</span> height = current.get(<span class="hljs-string">'height'</span>);
-				<span class="hljs-keyword">var</span> box = current.get(<span class="hljs-string">'box'</span>);
-				<span class="hljs-keyword">var</span> color = current.get(<span class="hljs-string">'color'</span>);
-
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; height; row++) {
-					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; width; col++) {
-						<span class="hljs-keyword">if</span> (box[row][col]) {
-							<span class="hljs-keyword">this</span>.drawBlock(x + col, y + row, color)
-						}
-					}
-				}
-			}
-		},</pre></div></div>
             
         </li>
         
@@ -350,9 +337,31 @@ game units. They default to drawing the whole board.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <h2 id="tetrisview-prototype-drawghost-">TetrisView.prototype.drawGhost()</h2>
+              <p>Draws the current Tetrimino in play.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+		drawCurrent: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
+			<span class="hljs-keyword">var</span> current = game.get(<span class="hljs-string">'current'</span>);
+			<span class="hljs-keyword">if</span> (current) {
+				<span class="hljs-keyword">var</span> x = current.get(<span class="hljs-string">'x'</span>);
+				<span class="hljs-keyword">var</span> y = current.get(<span class="hljs-string">'y'</span>);
+				<span class="hljs-keyword">var</span> width = current.get(<span class="hljs-string">'width'</span>);
+				<span class="hljs-keyword">var</span> height = current.get(<span class="hljs-string">'height'</span>);
+				<span class="hljs-keyword">var</span> box = current.get(<span class="hljs-string">'box'</span>);
+				<span class="hljs-keyword">var</span> color = current.get(<span class="hljs-string">'color'</span>);
+
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; height; row += <span class="hljs-number">1</span>) {
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; width; col += <span class="hljs-number">1</span>) {
+						<span class="hljs-keyword">if</span> (box[row][col]) {
+							<span class="hljs-keyword">this</span>.drawBlock(x + col, y + row, color);
+						}
+					}
+				}
+			}
+		},</pre></div></div>
             
         </li>
         
@@ -363,11 +372,25 @@ game units. They default to drawing the whole board.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
+              <h2 id="tetrisview-prototype-drawghost-">TetrisView.prototype.drawGhost()</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
               <p>Draws the ghost piece.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		drawGhost: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		drawGhost: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> game = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'game'</span>);
 			<span class="hljs-keyword">var</span> current = game.get(<span class="hljs-string">'current'</span>);
 
@@ -380,10 +403,10 @@ game units. They default to drawing the whole board.</li>
 				<span class="hljs-keyword">var</span> height = ghost.get(<span class="hljs-string">'height'</span>);
 				<span class="hljs-keyword">var</span> box = ghost.get(<span class="hljs-string">'box'</span>);
 
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; height; row++) {
-					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; width; col++) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; height; row += <span class="hljs-number">1</span>) {
+					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; width; col += <span class="hljs-number">1</span>) {
 						<span class="hljs-keyword">if</span> (box[row][col]) {
-							<span class="hljs-keyword">this</span>.drawBlock(x + col, y + row, <span class="hljs-string">'transparent'</span>)
+							<span class="hljs-keyword">this</span>.drawBlock(x + col, y + row, <span class="hljs-string">'transparent'</span>);
 						}
 					}
 				}
@@ -393,11 +416,11 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <h2 id="tetrisview-prototype-drawblock-x-y-fillstyle-">TetrisView.prototype.drawBlock(x, y, fillStyle)</h2>
 
@@ -406,11 +429,11 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Draws a block at an arbitrary coordinate with the given fillStyle.</p>
 <h3 id="params">Params</h3>
@@ -422,17 +445,18 @@ game units. They default to drawing the whole board.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		drawBlock: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, fillStyle)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		drawBlock: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, fillStyle)</span> {</span>
 			<span class="hljs-keyword">var</span> scale = <span class="hljs-keyword">this</span>.detail;</pre></div></div>
             
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>We draw the top two rows above the canvas</p>
 
@@ -443,11 +467,11 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Convert x and y from cell indicies to pixle locations</p>
 
@@ -465,21 +489,21 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Corner locations</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">var</span> tl = { <span class="hljs-string">'x'</span>: x + padding, <span class="hljs-string">'y'</span>: y + padding }
-			<span class="hljs-keyword">var</span> tr = { <span class="hljs-string">'x'</span>: x + scale - padding, <span class="hljs-string">'y'</span>: y + padding }
-			<span class="hljs-keyword">var</span> bl = { <span class="hljs-string">'x'</span>: x + padding, <span class="hljs-string">'y'</span>: y + scale - padding }
-			<span class="hljs-keyword">var</span> br = { <span class="hljs-string">'x'</span>: x + scale - padding, <span class="hljs-string">'y'</span>: y + scale - padding }
-			
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">var</span> tl = { <span class="hljs-string">'x'</span>: x + padding,         <span class="hljs-string">'y'</span>: y + padding };
+			<span class="hljs-keyword">var</span> tr = { <span class="hljs-string">'x'</span>: x + scale - padding, <span class="hljs-string">'y'</span>: y + padding };
+			<span class="hljs-keyword">var</span> bl = { <span class="hljs-string">'x'</span>: x + padding,         <span class="hljs-string">'y'</span>: y + scale - padding };
+			<span class="hljs-keyword">var</span> br = { <span class="hljs-string">'x'</span>: x + scale - padding, <span class="hljs-string">'y'</span>: y + scale - padding };
+
 			pen.save();
 
 			pen.fillStyle = fillStyle;
@@ -491,7 +515,7 @@ game units. They default to drawing the whole board.</li>
 
 			pen.lineTo(tr.x - radius, tr.y);
 			pen.arcTo(tr.x, tr.y, tr.x, tr.y + radius, radius);
-			
+
 			pen.lineTo(br.x, br.y - radius);
 			pen.arcTo(br.x, br.y, br.x - radius, br.y, radius);
 
@@ -511,37 +535,15 @@ game units. They default to drawing the whole board.</li>
         </li>
         
         
-        <li id="section-18">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
-              </div>
-              <h2 id="tetrisview-prototype-render-x-y-width-height-">TetrisView.prototype.render([x, [y, [width, [height]]]])</h2>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
-              <p>Clears the area of the canvas in terms of game units.</p>
-<h3 id="params">Params</h3>
-<ul>
-<li>The arguments are the bounding box of the the area to draw in
-game units. They default to drawing the whole board.</li>
-</ul>
+              <h2 id="tetrisview-prototype-render-x-y-width-height-">TetrisView.prototype.render([x, [y, [width, [height]]]])</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>		clearArea: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
-			<span class="hljs-keyword">var</span> pen = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'pen'</span>);
-			<span class="hljs-keyword">var</span> scale = <span class="hljs-keyword">this</span>.detail;</pre></div></div>
             
         </li>
         
@@ -552,6 +554,29 @@ game units. They default to drawing the whole board.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-20">&#182;</a>
               </div>
+              <p>Clears the area of the canvas in terms of game units.</p>
+<h3 id="params">Params</h3>
+<ul>
+<li>The arguments are the bounding box of the the area to draw in
+game units. They default to drawing the whole board.</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+		clearArea: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(x, y, width, height)</span> {</span>
+			<span class="hljs-keyword">var</span> pen = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'pen'</span>);
+			<span class="hljs-keyword">var</span> scale = <span class="hljs-keyword">this</span>.detail;</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
               <p>Note that we draw the top two rows above the canvas</p>
 
             </div>
@@ -560,8 +585,8 @@ game units. They default to drawing the whole board.</li>
 
 			pen.clearRect(x * scale - <span class="hljs-number">1</span>, y * scale - <span class="hljs-number">1</span>, width * scale + <span class="hljs-number">2</span>, height * scale + <span class="hljs-number">2</span>);
 		}
-	})
-})</pre></div></div>
+	});
+});</pre></div></div>
             
         </li>
         

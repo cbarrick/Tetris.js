@@ -3,11 +3,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 
 	<head>
-		<meta charset="UTF-8"/>
+		<title>Tetris.js</title>
 
-		<title>Tetris</title>
-
-		<script src="lib/require/require.js" data-main="main"
+		<script src="lib/require/require.js"
+			data-main="main"
 			type="application/javascript"
 			defer="defer"
 		></script>
@@ -17,309 +16,47 @@
 			defer="defer"
 		></script>
 
-		<style type="text/css">
-			/*<![CDATA[*/
-
-			/* Downloads
- 			***************/
-			@import url(http://fonts.googleapis.com/css?family=Quicksand:300,400,700);
-
-			/* Animation keyframes
-			 ***************/
-			@-webkit-keyframes bg {
-				from { background-position: 0 29px; }
-				to { background-position: 0 0; }
-			}
-			@-moz-keyframes bg {
-				from { background-position: 0 29px; }
-				to { background-position: 0 0; }
-			}
-			@-ms-keyframes bg {
-				from { background-position: 0 29px; }
-				to { background-position: 0 0; }
-			}
-			@-o-keyframes bg {
-				from { background-position: 0 29px; }
-				to { background-position: 0 0; }
-			}
-			@keyframes bg {
-				from { background-position: 0 29px; }
-				to { background-position: 0 0; }
-			}
-
-
-			/* Reset
-			 ***************/
-			* {
-				margin: 0;
-				padding: 0;
-				-webkit-box-sizing: border-box;
-				   -moz-box-sizing: border-box;
-				    -ms-box-sizing: border-box;
-				     -o-box-sizing: border-box;
-				        box-sizing: border-box;
-			}
-			html {
-				height: 100%;
-			}
-			body {
-				height: 100%;
-				min-height: 100%;
-			}
-
-			/* Global
-			 ***************/
-			body {
-				min-width: 650px;
-				color: hsl(355,0%,40%);
-				font-family: "Quicksand", "Open Sans", sans-serif;
-				font-size: 16px;
-				overflow: hidden;
-				background-image: url("assets/escheresque_ste.png");
-				background-repeat: repeat;
-
-				/*
-				-webkit-animation: bg 0.35s linear 0 infinite normal none;
-				   -moz-animation: bg 0.35s linear 0 infinite normal none;
-				    -ms-animation: bg 0.35s linear 0 infinite normal none;
-				     -o-animation: bg 0.35s linear 0 infinite normal none;
-				        animation: bg 0.35s linear 0 infinite normal none;
-				*/
-			}
-			a {
-				color: inherit;
-				transition: color 0.2s;
-				text-decoration: none;
-			}
-			a:hover {
-				color: hsl(355,60%,50%);
-			}
-			button {
-				width: 100px;
-				padding: 10px;
-				margin: 10px;
-				color: inherit;
-				background: hsl(0,0%,19%);
-				border: 3px solid white;
-				border-radius: 10px;
-			}
-			button:hover {
-				color: hsl(0,0%,19%);
-				background: white;
-			}
-			button:active {
-				color: white;
-				background: hsl(0,0%,19%);
-			}
-			em {
-				color: hsl(355,60%,50%);
-			}
-			blockquote > cite {
-				display: block;
-				text-align: right;
-			}
-			h1, h2 {
-				font-weight: normal;
-			}
-
-			/* Header
-			 ***************/
-			header {
-				position: relative;
-				width: 100%;
-				min-width: inherit;
-				padding: 5px;
-				font-size: 24px;
-				z-index: 1;
-
-				/* The h1 is the tallest thing in the header. The default
-				 * h1 font-size is 2em. Since we've set the font-size here to
-				 * 24px, that makes the height here 48px. We don't explicitly
-				 * set it for max flexibility */
-				/* height: 48px; */
-			}
-			header h1, header h2 {
-				display: inline-block;
-				z-index: 1;
-				font-weight: 300;
-			}
-			header h1 {
-				color: hsl(355,60%,50%);
-			}
-			header h2 {
-				font-size: 1em;
-				margin: 0 25px;
-			}
-			header address {
-				display: inline;
-			}
-
-			/* Game area
-			 ***************/
-			#game {
-				height: calc(100% - 25px - 48px - 20px);
-				padding: 20px;
-				text-align: center;
-			}
-			#game > .tetris-canvas {
-				max-height: 100%;
-				display: block;
-				border: 1px solid grey;
-				margin: auto;
-				background: hsla(355, 20%, 95%, 0.5);
-			}
-
-			/* Menu
-			 ***************/
-			#menu {
-				position: absolute;
-				width: 100%;
-				height: 100%;
-				top: 0;
-				right: 0;
-				z-index: 0;
-				color: white;
-				transition: all 0.35s;
-
-				/* when not open */
-				background: hsla(0,0%,19%,0);
-			}
-			#menu.open {
-				background: hsla(0,0%,19%,1);
-			}
-			#menu p {
-				padding-bottom: 10px;
-			}
-			#menu .buttons {
-				width: 0;
-				width: -webkit-fit-content;
-				width:    -moz-fit-content;
-				width:     -ms-fit-content;
-				width:      -o-fit-content;
-				width:         fit-content;
-				margin: auto;
-			}
-			.menu-block {
-				position: relative;
-				margin: auto;
-				transition: all 0.35s;
-
-				width: 0;
-				width: -webkit-fit-content;
-				width:    -moz-fit-content;
-				width:     -ms-fit-content;
-				width:      -o-fit-content;
-				width:         fit-content;
-
-				/* when not open */
-				height: 0;
-				padding-top: 0;
-				z-index: 0;
-				opacity: 0;
-			}
-			.menu-block.open {
-				/* When the block is open but the menu is compressed */
-				height: 100%;
-				z-index: 1;
-				opacity: 1;
-			}
-			#menu.open .menu-block.open {
-				/* When the both block and menu are open */
-				padding-top: 200px;
-			}
-			#intro {
-				max-width: 45em;
-			}
-			#intro h1 {
-				display: inline-block;
-			}
-			#instructions ul {
-				padding-top: 10px;
-			}
-			#score, #game-over {
-				position: absolute;
-				top: 20px;
-				right: 0;
-				width: 25%;
-				margin: 25px auto;
-				text-align: center;
-			}
-			#menu.open #score, #menu.open #game-over {
-				width: 100%;
-				font-size: 32px;
-			}
-
-			/* Audio controls
-			 ***************/
-			#music {
-				width: 100%;
-				position: fixed;
-				bottom: 0px;
-				z-index: 1;
-			}
-
-			/*]]>*/
-		</style>
-
+		<link rel="stylesheet" href="assets/tetris.css" media="screen" charset="utf-8"></link>
 	</head>
 
-	<body>
-		<header>
-			<h1><a href="http://cbarrick.github.io/Tetris.js/">Tetris.js</a></h1>
-			<h2>an experiment by <a href="https://github.com/cbarrick"><address>Chris Barrick</address></a></h2>
+	<body id='body'>
+
+		<header id='title'>
+			<h1>
+				<a href="http://cbarrick.github.io/Tetris.js/">Tetris.js</a>
+			</h1>
+			<h2>
+				an experiment by
+				<a href="https://github.com/cbarrick"><address>Chris Barrick</address></a>
+			</h2>
 		</header>
 
-		<!-- <audio id="music" autoplay="true" loop="true" controls="true"> -->
-		<audio id="music" loop="true" controls="true">
-			<source src="assets/Tetris Korobeiniki Remix.mp3"/>
-		</audio>
+		<div id="game" tabindex="-1">
+			<audio id="music" autoplay="true" loop="true">
+				<source src="assets/Tetris Korobeiniki Remix.mp3"/>
+			</audio>
 
-		<div id="menu" class="open">
-			<section id="intro" class="menu-block open">
-				<blockquote cite="http://en.wikipedia.org/wiki/Tetris">
-					<p><h1>TETRIS</h1> (Russian: Те́трис, pronounced [ˈtɛtrʲɪs]) is a tile-matching puzzle video game originally designed and programmed by Alexey Pajitnov in the Soviet Union. It was released on June 6, 1984, while he was working for the Dorodnicyn Computing Centre of the Academy of Science of the USSR in Moscow. He derived its name from the Greek numerical prefix tetra- (all of the game's pieces contain four segments) and tennis, Pajitnov's favorite sport.</p>
-
-					<p>The game (or one of its many variants) is available for nearly every video game console and computer operating system, as well as on devices such as graphing calculators, mobile phones, portable media players, PDAs, Network music players and even as an Easter egg on non-media products like oscilloscopes. It has even inspired Tetris serving dishes and been played on the sides of various buildings.</p>
-
-					<p>While versions of Tetris were sold for a range of 1980s home computer platforms as well as the arcades, it was the hugely successful handheld version for the Game Boy launched in 1989 that established the game as one of the most popular ever. Electronic Gaming Monthly's 100th issue had Tetris in first place as "Greatest Game of All Time". In 2007, Tetris came in second place in IGN's "100 Greatest Video Games of All Time". In January 2010, it was announced that Tetris had sold more than 170 million copies, approximately 70 million physical copies and over 100 million copies for cell phones, making it the highest paid-downloaded game of all time.</p>
-					<cite><a href="http://en.wikipedia.org/wiki/Tetris">Wikipedia</a></cite>
-				</blockquote>
-				<div class="buttons">
-					<button class="next-btn">Next</button>
-				</div>
-			</section>
-			<section id="instructions" class="menu-block">
-				<h1>Instructions</h1>
-				<ul>
-					<li><p>Use the <em>left</em> and <em>right</em> arrow keys to move</p></li>
-					<li><p>Use the <em>up</em> arrow key to rotate</p></li>
-					<li><p>Use the <em>down</em> arrow key to soft drop</p></li>
-					<li><p>Use the <em>space</em> bar to hard drop</p></li>
-					<li><p>Use the <em>shift</em> key to hold</p></li>
-					<li><p>Use the <em>esc</em> key to pause</p></li>
-				</ul>
-				<div class="buttons">
-					<button class="play-btn">Play</button>
-				</div>
-			</section>
-			<div id="game-over" class="menu-block">
-				<p>Game Over</p>
-				<p><em>Score</em></p>
-				<p><span class="score-value">0000</span></p>
-				<div class="buttons">
-					<button class="play-btn">Play again</button>
-				</div>
-			</div>
-			<div id="score" class="menu-block">
-				<p><em>Score</em></p>
-				<p><span class="score-value">0000</span></p>
-				<p id="esc-instructions">Press <em>esc</em> to <span id="esc-action">pause</span></p>
+			<div class="menu open">
+				<section id="instructions" class="menu-block open">
+					<h1>Instructions</h1>
+					<ul>
+						<li><p>Use the <em>left</em> and <em>right</em> arrow keys to move</p></li>
+						<li><p>Use the <em>up</em> arrow key to rotate</p></li>
+						<li><p>Use the <em>down</em> arrow key to soft drop</p></li>
+						<li><p>Use the <em>space</em> bar to hard drop</p></li>
+						<li><p>Use the <em>shift</em> key to hold</p></li>
+						<li><p>Use the <em>esc</em> key to pause</p></li>
+					</ul>
+					<h2>Score</h2>
+					<p><span class="score-value">0000</span></p>
+					<div class="buttons">
+						<button class="sound-btn">Mute</button>
+						<button class="play-btn">Play</button>
+					</div>
+				</section>
 			</div>
 		</div>
 
-		<div id="game">
-
-		</div>
 	</body>
 
 </html>

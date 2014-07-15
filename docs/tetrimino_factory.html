@@ -93,25 +93,27 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;
 
 	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);
@@ -150,12 +152,13 @@ created by this factory. See <code>src/tetrimino.js</code> for details</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> TetriminoFactory = module.exports = Model.extend({
+            <div class="content"><div class='highlight'><pre>
+	module.exports = Model.extend({
 
 		attributes: {
 			queue: [],
 			pool: [],
-			bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>}
+			bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>; }
 		},
 
 
@@ -192,14 +195,15 @@ created by this factory. See <code>src/tetrimino.js</code> for details</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		pop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		pop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> queue = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'queue'</span>);
 			<span class="hljs-keyword">var</span> pool = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'pool'</span>);
 			<span class="hljs-keyword">var</span> ret = queue.pop();
 			<span class="hljs-keyword">var</span> replacement = pool.pop();
-			
+
 			queue.unshift(replacement);
-			<span class="hljs-keyword">if</span> (pool.length == <span class="hljs-number">0</span>) {
+			<span class="hljs-keyword">if</span> (pool.length === <span class="hljs-number">0</span>) {
 				pool = <span class="hljs-keyword">this</span>._makeQueue();
 				<span class="hljs-keyword">this</span>.set(<span class="hljs-string">'pool'</span>, pool);
 			}
@@ -244,7 +248,8 @@ created by this factory. See <code>src/tetrimino.js</code> for details</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		_makeQueue: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		_makeQueue: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> bounds = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'bounds'</span>);
 			<span class="hljs-keyword">var</span> chooseFrom = [];
 			<span class="hljs-keyword">var</span> bag = [];
@@ -256,13 +261,13 @@ created by this factory. See <code>src/tetrimino.js</code> for details</li>
 			}
 			<span class="hljs-keyword">while</span> (chooseFrom.length &gt; <span class="hljs-number">0</span>) {
 				randomIndex = <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * chooseFrom.length);
-				bag.push(chooseFrom.splice(randomIndex, <span class="hljs-number">1</span>)[<span class="hljs-number">0</span>])
+				bag.push(chooseFrom.splice(randomIndex, <span class="hljs-number">1</span>)[<span class="hljs-number">0</span>]);
 			}
 			<span class="hljs-keyword">return</span> bag;
 		}
 
-	})
-})</pre></div></div>
+	});
+});</pre></div></div>
             
         </li>
         

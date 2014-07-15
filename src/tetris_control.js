@@ -21,14 +21,14 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
-	// Handles the user input and controls a Tetris game. Extends `Model`.
+	// This class manages all interactions with the DOM.
 	//
 	// This file is tightly coupled to the `index.xhtml` file. This control
 	// expects the DOM to be layed out as in that file.
 	//
 	// Attributes
 	// ----------
-	// - `document` (DOM document): The DOM tree of the page.
+	// - `root` (DOM Element): The DOM tree of the game.
 	// - `game` (Tetris): The game being controlled. Defaults to null.
 
 	module.exports = Model.extend({
@@ -37,16 +37,15 @@ define(function (require, exports, module) {
 		arr: 45,  // Auto Repeat Rate: the amount of time between auto repeats
 		          // http://harddrop.com/wiki/DAS
 
+		// Both attributes must be set by the constructor.
 		attributes: {
-			document: document, // The DOM tree being controled.
-			game: null          // The underlying game. Must be set by the constructor.
+			game: null  // The underlying game.
 		},
 
 
 		initialize: function () {
 			this.onKeydown = this.onKeydown.bind(this);
 			this.onKeyup = this.onKeyup.bind(this);
-			this.openInstructions = this.openInstructions.bind(this);
 			this.startGame = this.startGame.bind(this);
 		},
 
@@ -57,58 +56,59 @@ define(function (require, exports, module) {
 
 		delegateEvents: function () {
 			var game = this.get('game');
-			var document = this.get('document');
-			var menu = document.getElementById('menu');
-			var nextBtns = menu.getElementsByClassName('next-btn');
-			var playBtns = menu.getElementsByClassName('play-btn');
+			var root = game.get('root');
+			var playBtn = root.querySelector('.play-btn');
+			var soundBtn = root.querySelector('.sound-btn');
+			var music = root.querySelector('#music');
 			var i;
 
-			if (game) {
-				game.on('lock', function (coords) {
-					for (i = coords.length - 1; i >= 0; i -= 1) {
-						if (coords[i][1] < 2) {
-							game.stop();
-							return;
-						}
+			game.on('lock', function (coords) {
+				for (i = coords.length - 1; i >= 0; i -= 1) {
+					if (coords[i][1] < 2) {
+						game.stop();
+						return;
 					}
-					game.spawn();
-				});
+				}
+				game.spawn();
+			});
 
-				game.on('score', function (score) {
-					var document = this.get('document');
-					var scores = document.getElementsByClassName('score-value');
-					for (i = scores.length - 1; i >= 0; i -= 1) {
-						scores[i].innerHTML = '';
-						if (score < 1000) scores[i].innerHTML += '0';
-						if (score < 100) scores[i].innerHTML += '0';
-						if (score < 10) scores[i].innerHTML += '0';
-						scores[i].innerHTML += score;
-					}
-				}.bind(this));
+			game.on('score', function (score) {
+				var scores = root.querySelectorAll('.score-value');
+				for (i = scores.length - 1; i >= 0; i -= 1) {
+					scores[i].innerHTML = '';
+					if (score < 1000) scores[i].innerHTML += '0';
+					if (score < 100) scores[i].innerHTML += '0';
+					if (score < 10) scores[i].innerHTML += '0';
+					scores[i].innerHTML += score;
+				}
+			}.bind(this));
 
-				game.on('stop', function () {
-					this.quitGame();
-				}.bind(this));
+			game.on('stop', function () {
+				this.quitGame();
+			}.bind(this));
 
-				game.on('start', function () {
-					var document = this.get('document');
-					var scores = document.getElementsByClassName('score-value');
-					for (i = scores.length - 1; i >= 0; i -=1) {
-						scores[i].innerHTML = '0000';
-					}
-				}.bind(this));
-			}
+			game.on('start', function () {
+				var root = game.get('root');
+				var scores = root.querySelectorAll('.score-value');
+				for (i = scores.length - 1; i >= 0; i -=1) {
+					scores[i].innerHTML = '0000';
+				}
+			}.bind(this));
 
 			window.addEventListener('keydown', this.onKeydown, false);
 			window.addEventListener('keyup', this.onKeyup, false);
 
-			for (i = nextBtns.length - 1; i >= 0; i -= 1) {
-				nextBtns[i].addEventListener('click', this.openInstructions, false);
-			}
+			playBtn.addEventListener('click', this.startGame, false);
 
-			for (i = playBtns.length - 1; i >= 0; i -= 1) {
-				playBtns[i].addEventListener('click', this.startGame, false);
-			}
+			soundBtn.addEventListener('click', function () {
+				if (music.paused) {
+					soundBtn.innerHTML = 'Mute';
+					music.play();
+				} else {
+					soundBtn.innerHTML = 'Unmute';
+					music.pause();
+				}
+			}, false);
 		},
 
 
@@ -117,18 +117,14 @@ define(function (require, exports, module) {
 		// Removes all event handlers set with `delegateEvents`.
 
 		undelegateEvents: function () {
-			var document = this.get('document');
-			var menu = document.getElementById('menu');
-			var nextBtns = menu.getElementsByClassName('next-btn');
-			var playBtns = menu.getElementsByClassName('play-btn');
+			var game = this.get('game');
+			var root = game.get('root');
+			var menu = root.querySelector('#menu');
+			var playBtns = menu.querySelectorAll('.play-btn');
 			var i;
 
 			window.removeEventListener('keydown', this.onKeydown, false);
 			window.removeEventListener('keyup', this.onKeyup, false);
-
-			for (i = nextBtns.length - 1; i >= 0; i -= 1) {
-				nextBtns[i].removeEventListener('click', this.openInstructions, false);
-			}
 
 			for (i = playBtns.length - 1; i >= 0; i -= 1) {
 				playBtns[i].removeEventListener('click', this.startGame, false);
@@ -203,7 +199,7 @@ define(function (require, exports, module) {
 				action = function () {
 					if (gameState === 'paused') {
 						this.startGame();
-					} else {
+					} else if (gameState === 'running') {
 						this.pauseGame();
 					}
 				};
@@ -244,38 +240,17 @@ define(function (require, exports, module) {
 		},
 
 
-		// Transitions from the intro panel to the instructions panel.
-		// Assumes that the menu and intro are open.
-
-		openInstructions: function () {
-			var document = this.get('document');
-			var intro = document.getElementById('intro');
-			var instructions = document.getElementById('instructions');
-
-			// remove the 'open' class from the intro
-			intro.className = intro.className.replace(/\s*\bopen\b\s*/g, '');
-
-			// add the 'open' class to the instructions
-			instructions.className += ' open';
-		},
-
-
 		// Start the underlying game
 
 		startGame: function () {
 			var game = this.get('game');
-			var document = this.get('document');
-			var scorePanel = document.getElementById('score');
-			var opened = document.getElementsByClassName('open');
-			var escAction = document.getElementById('esc-action');
+			var root = game.get('root');
+			var menu = root.querySelector('.menu');
 
-			for (var i = opened.length - 1; i >= 0; i -= 1) {
-				opened[i].className = opened[i].className.replace(/\s*\bopen\b\s*/g, '');
-			}
+			menu.className = menu.className.replace(/\s*\bopen\b\s*/g, '');
 
-			scorePanel.className += ' open';
-			escAction.innerHTML = "pause";
-
+			root.tabIndex = -1; // This should be set in the HTML, must be non-null to set focus
+			root.focus();
 			game.start();
 		},
 
@@ -284,12 +259,10 @@ define(function (require, exports, module) {
 
 		pauseGame: function () {
 			var game = this.get('game');
-			var document = this.get('document');
-			var menu = document.getElementById('menu');
-			var escAction = document.getElementById('esc-action');
+			var root = game.get('root');
+			var menu = root.querySelector('.menu');
 
 			menu.className += ' open';
-			escAction.innerHTML = "resume";
 
 			game.pause();
 		},
@@ -299,16 +272,7 @@ define(function (require, exports, module) {
 
 		quitGame: function () {
 			var game = this.get('game');
-			var document = this.get('document');
-			var menu = document.getElementById('menu');
-			var scorePanel = document.getElementById('score');
-			var gameOver = document.getElementById('game-over');
-
-			scorePanel.className = scorePanel.className.replace(/\s*\bopen\b\s*/g, '');
-			gameOver.className += ' open';
-			menu.className += ' open';
-
-			// Restart the game to be ready for the next one
+			this.pauseGame();
 			game.restart();
 		}
 

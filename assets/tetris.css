@@ -1,0 +1,148 @@
+@import url(http://fonts.googleapis.com/css?family=Quicksand:300,400,700);
+
+* {
+	margin: 0;
+	padding: 0;
+	transition: .3s;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		-o-box-sizing: border-box;
+			box-sizing: border-box;
+}
+
+html {
+	height: 100%;
+	min-height: 400px;
+	min-width: 200px;
+}
+
+body {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	height: 100%;
+	min-width: 450px;
+	text-align: center;
+	font-family: "Quicksand", "Open Sans", sans-serif;
+	font-size: 16px;
+	color: white;
+	background-image: url("escheresque_ste.png");
+	background-repeat: repeat;
+}
+
+a {
+	color: inherit;
+	transition: color 0.2s;
+	text-decoration: none;
+}
+a:hover {
+	color: hsl(355,60%,50%);
+}
+
+button {
+	width: 100px;
+	padding: 10px;
+	margin: 10px;
+	color: inherit;
+	background: hsl(0,0%,19%);
+	border: 3px solid white;
+	border-radius: 10px;
+}
+button:hover {
+	color: hsl(0,0%,19%);
+	background: white;
+}
+button:active {
+	color: white;
+	background: hsl(0,0%,19%);
+}
+
+em {
+	color: hsl(355,60%,50%);
+}
+
+p {
+	padding-bottom: 0.75em;
+}
+
+ul {
+	list-style: none;
+}
+
+/* Header */
+#title {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100px;
+	width: 100%;
+	min-width: inherit;
+	padding: 5px;
+	font-size: 24px;
+	z-index: 3;
+}
+#title h1, #title h2 {
+	z-index: 1;
+	font-weight: 300;
+}
+#title h1 {
+	color: hsl(355,60%,50%);
+}
+#title h2 {
+	font-size: 1em;
+	margin: 0 25px;
+}
+#title address {
+	display: inline;
+}
+
+
+/* Music */
+#music {
+	display: none;
+}
+
+
+/* Game */
+.menu {
+	position: absolute;
+	z-index: 1;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	opacity: 0;
+	background: hsla(0,0%,19%,1);
+}
+.menu:before {
+	content: '';
+	display: inline-block;
+	height: 100%;
+	vertical-align: middle;
+}
+
+.menu.open {
+	z-index: 2;
+	opacity: 1;
+}
+
+.menu-block {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.tetris-canvas {
+	position: relative;
+	top: 100px;
+	z-index: 1;
+	display: inline-block;
+	min-height: 400px
+	min-width: 200px;
+	max-height: calc(100% - 105px);
+	max-width: 800px;
+	margin: 0 auto;
+	background: hsla(355, 20%, 95%, 0.5);
+}

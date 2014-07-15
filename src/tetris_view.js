@@ -21,7 +21,7 @@ define(function (require, exports, module) {
 	var Model = require('model');
 
 
-	// Canvas logic for drawing a game of Tetris. Extends `Model`.
+	// Creates and manages a canvas to show the game.
 	//
 	// Attributes
 	// ----------
@@ -54,6 +54,7 @@ define(function (require, exports, module) {
 			var el = document.createElement('canvas');
 			var pen = el.getContext('2d');
 			var game = this.get('game');
+			var root = game.get('root');
 
 			el.className = this.className;
 			el.width = game.width * this.detail;
@@ -68,6 +69,8 @@ define(function (require, exports, module) {
 				// TODO: Only render the part being updated
 				this.render();
 			}.bind(this));
+
+			root.appendChild(el);
 		},
 
 

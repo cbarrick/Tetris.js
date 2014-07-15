@@ -93,25 +93,27 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;
 
 	<span class="hljs-keyword">var</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'event_emitter'</span>);
@@ -140,7 +142,7 @@ in the super prototype.</p>
 <code>Model.extend</code> mixes-in EventEmitter, sets up the instance
 attributes, and calls the <code>initialize</code> method. It takes two
 arguments, an object providing initial instance attributes and
-an &quot;options&quot; argument which is not parsed but passed on to
+an “options” argument which is not parsed but passed on to
 <code>initialize</code>. Normally you want to override <code>initialize</code> for your
 construction logic and leave <code>constructor</code> alone. However, both
 may be specified.</li>
@@ -171,12 +173,13 @@ attribute is changed.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> Model = module.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(attributes, options)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+	<span class="hljs-keyword">var</span> Model = module.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(attributes, options)</span> {</span>
 		EventEmitter.call(<span class="hljs-keyword">this</span>);
 		<span class="hljs-keyword">this</span>.attributes = util.clone(<span class="hljs-keyword">this</span>.attributes);
 		<span class="hljs-keyword">this</span>.set(attributes);
 		<span class="hljs-keyword">this</span>.initialize(options);
-	}
+	};
 
 
 	Model.prototype = util.extend(<span class="hljs-built_in">Object</span>.create(EventEmitter.prototype), {
@@ -185,7 +188,7 @@ attribute is changed.</li>
 
 		constructor: Model,
 
-		initialize: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(options)</span> {</span>},</pre></div></div>
+		initialize: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
             
         </li>
         
@@ -196,9 +199,11 @@ attribute is changed.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <h2 id="m-set-values-m-set-key-value-">m.set(values), m.set(key, value)</h2>
+              <p>no-op</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>		},</pre></div></div>
             
         </li>
         
@@ -208,6 +213,19 @@ attribute is changed.</li>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <h2 id="m-set-values-m-set-key-value-">m.set(values), m.set(key, value)</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Sets instance members. You can either pass in an object mapping
 keys to values or a single (key, value) pair.</p>
@@ -220,7 +238,8 @@ keys to values or a single (key, value) pair.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		set: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		set: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key, value)</span> {</span>
 			<span class="hljs-keyword">var</span> oldValue;
 
 			<span class="hljs-keyword">if</span> (<span class="hljs-built_in">arguments</span>.length &gt; <span class="hljs-number">1</span>) {
@@ -236,11 +255,11 @@ keys to values or a single (key, value) pair.</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>key is assumed to be an object mapping keys to new values</p>
 
@@ -255,11 +274,11 @@ keys to values or a single (key, value) pair.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <h2 id="m-get-key-">m.get(key)</h2>
 
@@ -268,11 +287,11 @@ keys to values or a single (key, value) pair.</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Returns the instance attribute. Objects are passed by reference.</p>
 <h3 id="params">Params</h3>
@@ -282,7 +301,8 @@ keys to values or a single (key, value) pair.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		get: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key)</span> {</span>
 			<span class="hljs-keyword">var</span> ret = <span class="hljs-keyword">this</span>.attributes[key];
 			<span class="hljs-keyword">var</span> proto = <span class="hljs-built_in">Object</span>.getPrototypeOf(<span class="hljs-keyword">this</span>);
 			<span class="hljs-keyword">if</span> ((ret === <span class="hljs-literal">undefined</span>) &amp;&amp; (<span class="hljs-keyword">typeof</span> proto.get === <span class="hljs-string">'function'</span>)) {
@@ -294,32 +314,15 @@ keys to values or a single (key, value) pair.</p>
         </li>
         
         
-        <li id="section-9">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
-              </div>
-              <h2 id="m-tojson-">m.toJson()</h2>
-
-            </div>
-            
-        </li>
-        
-        
         <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Returns a shallow clone of the instance attributes.</p>
+              <h2 id="m-tojson-">m.toJson()</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>		toJson: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-			<span class="hljs-keyword">return</span> util.clone(<span class="hljs-keyword">this</span>.attributes);
-		},</pre></div></div>
             
         </li>
         
@@ -330,9 +333,14 @@ keys to values or a single (key, value) pair.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <h2 id="m-clone-">m.clone()</h2>
+              <p>Returns a shallow clone of the instance attributes.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+		toJson: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">return</span> util.clone(<span class="hljs-keyword">this</span>.attributes);
+		},</pre></div></div>
             
         </li>
         
@@ -343,16 +351,9 @@ keys to values or a single (key, value) pair.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>Returns a shallow clone of <code>this</code>.</p>
+              <h2 id="m-clone-">m.clone()</h2>
 
             </div>
-            
-            <div class="content"><div class='highlight'><pre>		clone: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-			<span class="hljs-keyword">var</span> clone = util.clone(<span class="hljs-keyword">this</span>);
-			clone.attributes = util.clone(<span class="hljs-keyword">this</span>.attributes);
-			<span class="hljs-keyword">return</span> clone;
-		}
-	})</pre></div></div>
             
         </li>
         
@@ -363,9 +364,17 @@ keys to values or a single (key, value) pair.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <h2 id="model-extend-extension-">Model.extend(extension)</h2>
+              <p>Returns a shallow clone of <code>this</code>.</p>
 
             </div>
+            
+            <div class="content"><div class='highlight'><pre>
+		clone: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> clone = util.clone(<span class="hljs-keyword">this</span>);
+			clone.attributes = util.clone(<span class="hljs-keyword">this</span>.attributes);
+			<span class="hljs-keyword">return</span> clone;
+		}
+	});</pre></div></div>
             
         </li>
         
@@ -375,6 +384,19 @@ keys to values or a single (key, value) pair.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <h2 id="model-extend-extension-">Model.extend(extension)</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Returns a constructor for a class extending <code>Model</code>. Each subclass
 will also have an <code>extend</code> method that behaves in the same manner.</p>
@@ -387,15 +409,16 @@ any members of the same name in the parent class.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	Model.extend = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(extension)</span> {</span>
-		<span class="hljs-keyword">var</span> newCtor = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>Model.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>)};
+            <div class="content"><div class='highlight'><pre>
+	Model.extend = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(extension)</span> {</span>
+		<span class="hljs-keyword">var</span> newCtor = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span> Model.apply(<span class="hljs-keyword">this</span>, <span class="hljs-built_in">arguments</span>); };
 		newCtor.prototype = <span class="hljs-built_in">Object</span>.create(<span class="hljs-keyword">this</span>.prototype);
 		util.extend(newCtor.prototype, extension);
 		newCtor.extend = <span class="hljs-keyword">this</span>.extend;
 		<span class="hljs-keyword">return</span> newCtor;
-	}
+	};
 
-})</pre></div></div>
+});</pre></div></div>
             
         </li>
         

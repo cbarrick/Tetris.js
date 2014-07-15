@@ -93,25 +93,27 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;
 
 	<span class="hljs-keyword">var</span> Clock = <span class="hljs-built_in">require</span>(<span class="hljs-string">'clock'</span>);
@@ -129,11 +131,8 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>The board on which tetris is played. Extends <code>Clock</code>.</p>
-<p>A matrix manages its own queue of Tetriminos and hold slots.
-It exposes the API for moving pieces around.</p>
-<p>A Tetris instance acts just like a clock, where the clock states
-correspond to gameplay.</p>
+              <p>This class handles the main game logic.
+It manages the board and constructs the controler and view.</p>
 <h2 id="events">Events</h2>
 
             </div>
@@ -184,13 +183,14 @@ autodroping.</li>
 bottom-right. A standard game of Tetris is 10 x 22. The top two rows
 should not be shown to the user.</li>
 <li><code>queue</code> (TetriminoFactory): The Tetriminos to be played.</li>
-<li><code>score_keeper</code> (ScoreKeeper): The logic for keeping up with the score.</li>
+<li><code>scoreKeeper</code> (ScoreKeeper): The logic for keeping up with the score.</li>
 <li><code>view</code> (TetrisView): The view of the game.</li>
 </ul>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> Tetris = module.exports = Clock.extend({
+            <div class="content"><div class='highlight'><pre>
+	module.exports = Clock.extend({
 
 		width: <span class="hljs-number">10</span>,
 		height: <span class="hljs-number">22</span>,
@@ -198,15 +198,16 @@ should not be shown to the user.</li>
 
 
 		attributes: {
-			controler: <span class="hljs-literal">null</span>,     <span class="hljs-comment">// Controler of the game</span>
-			current: <span class="hljs-literal">null</span>,       <span class="hljs-comment">// Current Tetrimino in play</span>
-			delay: <span class="hljs-number">300</span>,          <span class="hljs-comment">// Miliseconds before autodrop, inherited from Clock</span>
-			dropLock: <span class="hljs-literal">false</span>,     <span class="hljs-comment">// Prevents autodrop, enable with #.set</span>
-			hold: <span class="hljs-literal">null</span>,          <span class="hljs-comment">// Tetrimino on hold</span>
-			matrix: <span class="hljs-literal">null</span>,        <span class="hljs-comment">// Game area</span>
-			queue: <span class="hljs-literal">null</span>,         <span class="hljs-comment">// Queue of upcoming Tetriminos</span>
-			score_keeper: <span class="hljs-literal">null</span>,  <span class="hljs-comment">// Keeps track of the score of this game</span>
-			view: <span class="hljs-literal">null</span>           <span class="hljs-comment">// View of this game</span>
+			controler: <span class="hljs-literal">null</span>,    <span class="hljs-comment">// Controler of the game</span>
+			current: <span class="hljs-literal">null</span>,      <span class="hljs-comment">// Current Tetrimino in play</span>
+			delay: <span class="hljs-number">300</span>,         <span class="hljs-comment">// Miliseconds before autodrop, inherited from Clock</span>
+			dropLock: <span class="hljs-literal">false</span>,    <span class="hljs-comment">// Prevents autodrop, enable with #.set</span>
+			hold: <span class="hljs-literal">null</span>,         <span class="hljs-comment">// Tetrimino on hold</span>
+			matrix: <span class="hljs-literal">null</span>,       <span class="hljs-comment">// Game area</span>
+			queue: <span class="hljs-literal">null</span>,        <span class="hljs-comment">// Queue of upcoming Tetriminos</span>
+			root: <span class="hljs-literal">null</span>,         <span class="hljs-comment">// The root DOM element of the game. Set by the constructor.</span>
+			scoreKeeper: <span class="hljs-literal">null</span>,  <span class="hljs-comment">// Keeps track of the score of this game</span>
+			view: <span class="hljs-literal">null</span>          <span class="hljs-comment">// View of this game</span>
 		},
 
 
@@ -216,16 +217,16 @@ should not be shown to the user.</li>
 			<span class="hljs-keyword">var</span> queue = <span class="hljs-keyword">new</span> TetriminoFactory({ bounds: <span class="hljs-keyword">this</span>._bounds.bind(<span class="hljs-keyword">this</span>) });
 			<span class="hljs-keyword">var</span> view = <span class="hljs-keyword">new</span> TetrisView({ game: <span class="hljs-keyword">this</span> });
 			<span class="hljs-keyword">var</span> controler = <span class="hljs-keyword">new</span> TetrisControl({ game: <span class="hljs-keyword">this</span> });
-			<span class="hljs-keyword">var</span> score_keeper = <span class="hljs-keyword">new</span> ScoreKeeper({ game: <span class="hljs-keyword">this</span> });
+			<span class="hljs-keyword">var</span> scoreKeeper = <span class="hljs-keyword">new</span> ScoreKeeper({ game: <span class="hljs-keyword">this</span> });
 
 			<span class="hljs-keyword">this</span>.set({
 				<span class="hljs-string">'controler'</span>: controler,
 				<span class="hljs-string">'delay'</span>: <span class="hljs-keyword">this</span>.initialDelay,
 				<span class="hljs-string">'matrix'</span>: <span class="hljs-keyword">this</span>._getEmptyMatrix(),
 				<span class="hljs-string">'queue'</span>: queue,
-				<span class="hljs-string">'score_keeper'</span>: score_keeper,
+				<span class="hljs-string">'scoreKeeper'</span>: scoreKeeper,
 				<span class="hljs-string">'view'</span>: view
-			})</pre></div></div>
+			});</pre></div></div>
             
         </li>
         
@@ -236,14 +237,14 @@ should not be shown to the user.</li>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Pass the score event up from the score_keeper,
+              <p>Pass the score event up from the scoreKeeper,
 also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			score_keeper.on(<span class="hljs-string">'score'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(score, multiplier)</span> {</span>
+            <div class="content"><div class='highlight'><pre>			scoreKeeper.on(<span class="hljs-string">'score'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(score, multiplier)</span> {</span>
 				<span class="hljs-keyword">var</span> delay = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'delay'</span>);
-				delay *= <span class="hljs-number">99</span>/<span class="hljs-number">100</span>
+				delay *= <span class="hljs-number">99</span>/<span class="hljs-number">100</span>;
 				<span class="hljs-keyword">this</span>.set({<span class="hljs-string">'delay'</span>: delay});
 				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'score'</span>, score, multiplier);
 			}.bind(<span class="hljs-keyword">this</span>));</pre></div></div>
@@ -262,8 +263,8 @@ also increase dificulty</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">this</span>.on(<span class="hljs-string">'downtick'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-				<span class="hljs-keyword">this</span>.drop()
-			}.bind(<span class="hljs-keyword">this</span>))</pre></div></div>
+				<span class="hljs-keyword">this</span>.drop();
+			}.bind(<span class="hljs-keyword">this</span>));</pre></div></div>
             
         </li>
         
@@ -281,6 +282,7 @@ also increase dificulty</p>
             <div class="content"><div class='highlight'><pre>			controler.delegateEvents();
 
 			<span class="hljs-keyword">this</span>.spawn();
+			console.log(<span class="hljs-keyword">this</span>.get(<span class="hljs-string">'root'</span>))
 		},</pre></div></div>
             
         </li>
@@ -309,9 +311,10 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		left:  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._move(-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>)},
-		right: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._move(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>)},
-		down:  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._move(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>)},
+            <div class="content"><div class='highlight'><pre>
+		left:  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._move(-<span class="hljs-number">1</span>, <span class="hljs-number">0</span>); },
+		right: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._move(<span class="hljs-number">1</span>, <span class="hljs-number">0</span>); },
+		down:  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._move(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>); },
 		_move: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(dx, dy)</span> {</span>
 			<span class="hljs-keyword">var</span> current = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'current'</span>);
 			<span class="hljs-keyword">if</span> (current) {
@@ -373,7 +376,8 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		rotate: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		rotate: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> current = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'current'</span>);
 			<span class="hljs-keyword">if</span> (current) {
 				<span class="hljs-keyword">var</span> x = current.get(<span class="hljs-string">'x'</span>);
@@ -412,7 +416,7 @@ also increase dificulty</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
-              <p>Drops the current Tetrimino. If it can&#39;t move down, it is locked.</p>
+              <p>Drops the current Tetrimino. If it can’t move down, it is locked.</p>
 <h3 id="params">Params</h3>
 <ul>
 <li><code>hard</code> (Boolean): If true, drops all the way down, else drops one line.</li>
@@ -421,13 +425,13 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		drop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(hard, nolock)</span> {</span>
-			<span class="hljs-keyword">var</span> matrix = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'matrix'</span>);
+            <div class="content"><div class='highlight'><pre>
+		drop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(hard, nolock)</span> {</span>
 			<span class="hljs-keyword">var</span> current = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'current'</span>);
 			<span class="hljs-keyword">var</span> dropLock = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'dropLock'</span>);
 
 			<span class="hljs-keyword">if</span> (current &amp;&amp; !dropLock) {
-				<span class="hljs-keyword">var</span> startpos = { <span class="hljs-string">'x'</span>: current.get(<span class="hljs-string">'x'</span>), <span class="hljs-string">'y'</span>: current.get(<span class="hljs-string">'y'</span>) }
+				<span class="hljs-keyword">var</span> startpos = { <span class="hljs-string">'x'</span>: current.get(<span class="hljs-string">'x'</span>), <span class="hljs-string">'y'</span>: current.get(<span class="hljs-string">'y'</span>) };
 				<span class="hljs-keyword">var</span> newpos;
 				<span class="hljs-keyword">var</span> width;
 				<span class="hljs-keyword">var</span> height;
@@ -435,7 +439,7 @@ also increase dificulty</p>
 				<span class="hljs-keyword">if</span> (hard) {
 					newpos = startpos = current.drop();
 				}
-				
+
 				newpos = <span class="hljs-keyword">this</span>.down();
 				<span class="hljs-keyword">if</span> (newpos.y == startpos.y &amp;&amp; !nolock) {
 					<span class="hljs-keyword">this</span>.lock();
@@ -445,6 +449,7 @@ also increase dificulty</p>
 				height = newpos.y - startpos.y;
 
 				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'update'</span>, startpos.x, startpos.y, width, height);
+				console.log(document.activeElement)
 			}
 		},</pre></div></div>
             
@@ -474,17 +479,18 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		hold: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		hold: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> current = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'current'</span>);
 			<span class="hljs-keyword">var</span> hold = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'hold'</span>);
 
 			<span class="hljs-keyword">if</span> (!<span class="hljs-keyword">this</span>._holdLock &amp;&amp; current) {
-				current.initialize(); <span class="hljs-comment">// Reset to initial values</span>
+				current.initialize();<span class="hljs-comment">// Reset to initial values</span>
 				<span class="hljs-keyword">if</span> (hold) {
 					<span class="hljs-keyword">this</span>.set({
 						<span class="hljs-string">'current'</span>: hold,
 						<span class="hljs-string">'hold'</span>: current
-					})
+					});
 				} <span class="hljs-keyword">else</span> {
 					<span class="hljs-keyword">this</span>.set({ <span class="hljs-string">'hold'</span>: current });
 					<span class="hljs-keyword">this</span>.spawn();
@@ -520,7 +526,8 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		lock: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		lock: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> current = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'current'</span>);
 
 			<span class="hljs-keyword">if</span> (current) {
@@ -529,19 +536,17 @@ also increase dificulty</p>
 				<span class="hljs-keyword">var</span> coords = current.getCoordinates();
 				<span class="hljs-keyword">var</span> x;
 				<span class="hljs-keyword">var</span> y;
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; coords.length; i++) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; coords.length; i += <span class="hljs-number">1</span>) {
 					x = coords[i][<span class="hljs-number">0</span>];
 					y = coords[i][<span class="hljs-number">1</span>];
 					matrix[y][x] = color;
 				}
-				<span class="hljs-keyword">this</span>.set({current: <span class="hljs-literal">null</span>})
+				<span class="hljs-keyword">this</span>.set({current: <span class="hljs-literal">null</span>});
+
+				<span class="hljs-keyword">this</span>._holdLock = <span class="hljs-literal">false</span>;
+				<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'lock'</span>, coords);
+				<span class="hljs-keyword">this</span>.clearLines();
 			}
-
-			<span class="hljs-keyword">this</span>._holdLock = <span class="hljs-literal">false</span>;
-
-			<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'lock'</span>, coords);
-
-			<span class="hljs-keyword">this</span>.clearLines();
 		},</pre></div></div>
             
         </li>
@@ -570,7 +575,8 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		spawn: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		spawn: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> queue = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'queue'</span>);
 			<span class="hljs-keyword">var</span> current = queue.pop();
 			<span class="hljs-keyword">var</span> x = current.get(<span class="hljs-string">'x'</span>);
@@ -605,26 +611,27 @@ also increase dificulty</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-22">&#182;</a>
               </div>
-              <p>Restarts the game. The game will be in the &quot;stopped&quot; state.</p>
+              <p>Restarts the game. The game will be in the “stopped” state.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		restart: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		restart: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> queue = <span class="hljs-keyword">new</span> TetriminoFactory({ bounds: <span class="hljs-keyword">this</span>._bounds.bind(<span class="hljs-keyword">this</span>) });
-			<span class="hljs-keyword">var</span> score_keeper = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'score_keeper'</span>);
+			<span class="hljs-keyword">var</span> scoreKeeper = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'scoreKeeper'</span>);
 
-			score_keeper.set({
+			scoreKeeper.set({
 				<span class="hljs-string">'combo'</span>: <span class="hljs-number">0</span>,
 				<span class="hljs-string">'dryspell'</span>: <span class="hljs-number">0</span>,
 				<span class="hljs-string">'score'</span>: <span class="hljs-number">0</span>
-			})
+			});
 
 			<span class="hljs-keyword">this</span>.set({
 				<span class="hljs-string">'delay'</span>: <span class="hljs-keyword">this</span>.initialDelay,
 				<span class="hljs-string">'matrix'</span>: <span class="hljs-keyword">this</span>._getEmptyMatrix(),
 				<span class="hljs-string">'queue'</span>: queue
-			})
-			
+			});
+
 			Clock.prototype.restart.call(<span class="hljs-keyword">this</span>);
 			<span class="hljs-keyword">this</span>.spawn();
 		},</pre></div></div>
@@ -655,9 +662,10 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		clearLines: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		clearLines: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> rows = [];
-			<span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span>; <span class="hljs-comment">// We start at row 2 because 0 and 1 are off canvas</span>
+			<span class="hljs-keyword">var</span> y = <span class="hljs-number">2</span>;<span class="hljs-comment">// We start at row 2 because 0 and 1 are off canvas</span>
 			<span class="hljs-keyword">var</span> matrix = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'matrix'</span>);
 
 			<span class="hljs-keyword">this</span>._clearLines(y, rows, matrix);
@@ -670,15 +678,17 @@ also increase dificulty</p>
 		_clearLines: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(y, rows, matrix)</span> {</span>
 			<span class="hljs-keyword">if</span> (y &gt;= matrix.length) <span class="hljs-keyword">return</span>;
 
-			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.width; i++) {
+			<span class="hljs-keyword">var</span> i, j;
+
+			<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-keyword">this</span>.width; i += <span class="hljs-number">1</span>) {
 				<span class="hljs-keyword">if</span> (matrix[y][i] === <span class="hljs-literal">null</span>) {
 					<span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>._clearLines(y + <span class="hljs-number">1</span>, rows, matrix);
 				}
 			}
 
 			rows.push(y);
-			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = y; i &gt; <span class="hljs-number">0</span>; i--) {
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-keyword">this</span>.width; j++) {
+			<span class="hljs-keyword">for</span> (i = y; i &gt; <span class="hljs-number">0</span>; i -= <span class="hljs-number">1</span>) {
+				<span class="hljs-keyword">for</span> (j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-keyword">this</span>.width; j += <span class="hljs-number">1</span>) {
 					matrix[i][j] = matrix[i-<span class="hljs-number">1</span>][j];
 				}
 			}
@@ -712,7 +722,8 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		resetDropTime: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		resetDropTime: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			Clock.prototype._stop.call(<span class="hljs-keyword">this</span>);
 			Clock.prototype._start.call(<span class="hljs-keyword">this</span>);
 		},</pre></div></div>
@@ -730,11 +741,12 @@ also increase dificulty</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		_getEmptyMatrix: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-			<span class="hljs-keyword">var</span> matrix = []
-			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; <span class="hljs-keyword">this</span>.height; row++) {
+            <div class="content"><div class='highlight'><pre>
+		_getEmptyMatrix: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+			<span class="hljs-keyword">var</span> matrix = [];
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; <span class="hljs-keyword">this</span>.height; row += <span class="hljs-number">1</span>) {
 				matrix[row] = [];
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; <span class="hljs-keyword">this</span>.width; col++) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; <span class="hljs-keyword">this</span>.width; col += <span class="hljs-number">1</span>) {
 					matrix[row][col] = <span class="hljs-literal">null</span>;
 				}
 			}
@@ -763,11 +775,24 @@ also increase dificulty</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-29">&#182;</a>
               </div>
+              
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-30">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-30">&#182;</a>
+              </div>
               <p>The bounding funciton given to the Tetriminos</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		_bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(coordinates)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		_bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(coordinates)</span> {</span>
 			<span class="hljs-keyword">var</span> matrix = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'matrix'</span>);
 			<span class="hljs-keyword">var</span> height = matrix.length;
 			<span class="hljs-keyword">var</span> width = matrix[<span class="hljs-number">0</span>].length;
@@ -784,7 +809,7 @@ also increase dificulty</p>
 					|| (matrix[y][x] !== <span class="hljs-literal">null</span>)) {
 					ret = <span class="hljs-literal">false</span>;
 				}
-			})
+			});
 			<span class="hljs-keyword">return</span> ret;
 		},
 
@@ -793,33 +818,35 @@ also increase dificulty</p>
 			<span class="hljs-keyword">var</span> matrix = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'matrix'</span>);
 			<span class="hljs-keyword">var</span> current = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'current'</span>);
 			<span class="hljs-keyword">var</span> coords;
+			<span class="hljs-keyword">var</span> i, j, k;
+
 			<span class="hljs-keyword">var</span> str = <span class="hljs-string">'[Tetris: '</span>;
 
 			<span class="hljs-keyword">if</span> (current) {
-				coords = current.getCoordinates()
+				coords = current.getCoordinates();
 				str += current.toString();
 				str += <span class="hljs-string">']'</span>;
 			} <span class="hljs-keyword">else</span> {
 				str += <span class="hljs-string">'null]'</span>;
 			}
 
-			
+
 			<span class="hljs-keyword">if</span> (showMatrix) {
 				<span class="hljs-keyword">var</span> mark = <span class="hljs-string">'X'</span>;
 				str += <span class="hljs-string">'\n+'</span>;
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; matrix[<span class="hljs-number">0</span>].length; i++) str += <span class="hljs-string">'-'</span>;
-				str += <span class="hljs-string">'+'</span>
+				<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; matrix[<span class="hljs-number">0</span>].length; i += <span class="hljs-number">1</span>) str += <span class="hljs-string">'-'</span>;
+				str += <span class="hljs-string">'+'</span>;
 
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; matrix.length; i++) {
+				<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; matrix.length; i += <span class="hljs-number">1</span>) {
 					str += <span class="hljs-string">"\n|"</span>;
-					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; matrix[i].length; j++) {
+					<span class="hljs-keyword">for</span> (j = <span class="hljs-number">0</span>; j &lt; matrix[i].length; j += <span class="hljs-number">1</span>) {
 						<span class="hljs-keyword">if</span> (matrix[i][j] !== <span class="hljs-literal">null</span>) {
 							mark = <span class="hljs-string">'X'</span>;
 						} <span class="hljs-keyword">else</span> {
 							mark = <span class="hljs-string">' '</span>;
 						}
 						<span class="hljs-keyword">if</span> (coords) {
-							<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k = <span class="hljs-number">0</span>; k &lt; coords.length; k++) {
+							<span class="hljs-keyword">for</span> (k = <span class="hljs-number">0</span>; k &lt; coords.length; k += <span class="hljs-number">1</span>) {
 								<span class="hljs-keyword">if</span> (coords[k][<span class="hljs-number">0</span>] == j &amp;&amp; coords[k][<span class="hljs-number">1</span>] == i) {
 									mark = <span class="hljs-string">'O'</span>;
 								}
@@ -831,16 +858,16 @@ also increase dificulty</p>
 				}
 
 				str += <span class="hljs-string">'\n+'</span>;
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; matrix[<span class="hljs-number">0</span>].length; i++) str += <span class="hljs-string">'-'</span>;
+				<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; matrix[<span class="hljs-number">0</span>].length; i += <span class="hljs-number">1</span>) str += <span class="hljs-string">'-'</span>;
 				str += <span class="hljs-string">'+'</span>;
 			}
 
 			<span class="hljs-keyword">return</span> str;
 		}
 
-	})
+	});
 
-})</pre></div></div>
+});</pre></div></div>
             
         </li>
         

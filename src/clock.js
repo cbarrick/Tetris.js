@@ -163,11 +163,10 @@ define(function (require, exports, module) {
 
 
 		// Registered for the `change:delay` event.
-		// Changes the clock to the new delay even if it's already running.
+		// Restarts the clock so that the new delay takes effect.
 
 		_onChangeDelay: function (newdelay) {
 			var state = this.get('state');
-			this.set('delay', newdelay);
 			if (state == 'running') {
 				this._stop();
 				this._start();

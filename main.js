@@ -7,11 +7,6 @@ require.config({
 
 
 require(['tetris'], function (Tetris) {
-	var container = document.getElementById('game');
-	var t = new Tetris();
-
-	var view = t.get('view');
-
-	view.attach(container);
-	view.render();
+	var root = document.getElementById('body');
+	window.t = new Tetris({root:root});
 });

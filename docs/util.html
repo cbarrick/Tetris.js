@@ -93,25 +93,27 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;</pre></div></div>
             
         </li>
@@ -127,7 +129,8 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> util = module.exports = {};</pre></div></div>
+            <div class="content"><div class='highlight'><pre>
+	<span class="hljs-keyword">var</span> util = module.exports = {};</pre></div></div>
             
         </li>
         
@@ -155,10 +158,11 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	util.clone = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(obj)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+	util.clone = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(obj)</span> {</span>
 		<span class="hljs-keyword">var</span> clone = <span class="hljs-built_in">Object</span>.create(<span class="hljs-built_in">Object</span>.getPrototypeOf(obj));
 		<span class="hljs-keyword">return</span> util.extend(clone, obj);
-	}</pre></div></div>
+	};</pre></div></div>
             
         </li>
         
@@ -187,17 +191,18 @@ Returns the base object.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	util.extend = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(base, extension)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+	util.extend = <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(base, extension)</span> {</span>
 		<span class="hljs-keyword">var</span> props = <span class="hljs-built_in">Object</span>.getOwnPropertyNames(extension);
 		<span class="hljs-keyword">var</span> desc;
 		props.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(prop)</span> {</span>
 			desc = <span class="hljs-built_in">Object</span>.getOwnPropertyDescriptor(extension, prop);
 			<span class="hljs-built_in">Object</span>.defineProperty(base, prop, desc);
-		})
+		});
 		<span class="hljs-keyword">return</span> base;
-	}
+	};
 
-})</pre></div></div>
+});</pre></div></div>
             
         </li>
         

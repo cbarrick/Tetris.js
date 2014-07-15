@@ -93,25 +93,27 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;
 
 	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);</pre></div></div>
@@ -166,7 +168,8 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> ScoreKeeper = module.exports = Model.extend({
+            <div class="content"><div class='highlight'><pre>
+	module.exports = Model.extend({
 
 		attributes: {
 			combo: <span class="hljs-number">0</span>,
@@ -183,7 +186,7 @@ along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
 			game.on(<span class="hljs-string">'lock'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 				<span class="hljs-keyword">var</span> dryspell = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'dryspell'</span>);
 				<span class="hljs-keyword">this</span>.set({ <span class="hljs-string">'dryspell'</span>: dryspell + <span class="hljs-number">1</span> });
-			}.bind(<span class="hljs-keyword">this</span>))
+			}.bind(<span class="hljs-keyword">this</span>));
 		},</pre></div></div>
             
         </li>
@@ -219,7 +222,8 @@ turn.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		score: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(rows)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		score: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(rows)</span> {</span>
 			<span class="hljs-keyword">var</span> dryspell = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'dryspell'</span>);
 			<span class="hljs-keyword">var</span> score = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'score'</span>);
 			<span class="hljs-keyword">var</span> combo = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'combo'</span>);
@@ -242,26 +246,11 @@ turn.</p>
             <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">if</span> (rows.length &gt; <span class="hljs-number">0</span>) dryspell = -<span class="hljs-number">1</span>;
 
 			<span class="hljs-keyword">if</span> (dryspell &gt; <span class="hljs-number">0</span>) combo = <span class="hljs-number">0</span>;
-			<span class="hljs-keyword">else</span> combo += <span class="hljs-number">1</span>;</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>No breaks, intentional fall through</p>
+			<span class="hljs-keyword">else</span> combo += <span class="hljs-number">1</span>;
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">switch</span> (rows.length) {
-				<span class="hljs-keyword">case</span> <span class="hljs-number">4</span>: bonus += <span class="hljs-number">1</span>;
-				<span class="hljs-keyword">case</span> <span class="hljs-number">3</span>: bonus += <span class="hljs-number">1</span>;
-				<span class="hljs-keyword">case</span> <span class="hljs-number">2</span>: bonus += <span class="hljs-number">1</span>;
-			}
+			<span class="hljs-keyword">if</span> (rows.length &gt;= <span class="hljs-number">4</span>) bonus += <span class="hljs-number">1</span>;
+			<span class="hljs-keyword">if</span> (rows.length &gt;= <span class="hljs-number">3</span>) bonus += <span class="hljs-number">1</span>;
+			<span class="hljs-keyword">if</span> (rows.length &gt;= <span class="hljs-number">2</span>) bonus += <span class="hljs-number">1</span>;
 
 			points = (rows.length + bonus) * combo;
 			score += points;
@@ -271,13 +260,13 @@ turn.</p>
 				<span class="hljs-string">'dryspell'</span>: dryspell,
 				<span class="hljs-string">'score'</span>: score,
 				<span class="hljs-string">'combo'</span>: combo
-			})
+			});
 
 			<span class="hljs-keyword">this</span>.trigger(<span class="hljs-string">'score'</span>, score, combo);
 		}
 
-	})
-})</pre></div></div>
+	});
+});</pre></div></div>
             
         </li>
         

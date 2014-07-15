@@ -25,14 +25,8 @@ define(function (require, exports, module) {
 	var TetrisView = require('tetris_view');
 
 
-	// The board on which tetris is played. Extends `Clock`.
-	//
-	// A matrix manages its own queue of Tetriminos and hold slots.
-	// It exposes the API for moving pieces around.
-	//
-	// A Tetris instance acts just like a clock, where the clock states
-	// correspond to gameplay.
-	//
+	// This class handles the main game logic.
+	// It manages the board and constructs the controler and view.
 	//
 	// Events
 	// ------
@@ -79,7 +73,8 @@ define(function (require, exports, module) {
 			hold: null,         // Tetrimino on hold
 			matrix: null,       // Game area
 			queue: null,        // Queue of upcoming Tetriminos
-			scoreKeeper: null, // Keeps track of the score of this game
+			root: null,         // The root DOM element of the game. Set by the constructor.
+			scoreKeeper: null,  // Keeps track of the score of this game
 			view: null          // View of this game
 		},
 
@@ -119,6 +114,7 @@ define(function (require, exports, module) {
 			controler.delegateEvents();
 
 			this.spawn();
+			console.log(this.get('root'))
 		},
 
 
@@ -206,6 +202,7 @@ define(function (require, exports, module) {
 				height = newpos.y - startpos.y;
 
 				this.trigger('update', startpos.x, startpos.y, width, height);
+				console.log(document.activeElement)
 			}
 		},
 

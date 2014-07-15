@@ -13,7 +13,7 @@ This game was created as a project for *CSCI 4070 - Game Programming* at the Uni
 
 Source layout
 -------------
-The source has a very standard layout. Part of the requirement was that we use no 3rd party libraries. However, I used [Require.js] for the ability to modularize my code into separate files and [Mocha] and [Chai] for unit testing. None of these effected the source logic itself.
+The source has a very standard layout. Part of the requirement was that we use no 3rd party libraries. However, I used [Require.js] for code modularization and [Mocha] and [Chai] for unit testing, and more recently I have introduced a pollyfill to normalize keycodes across browsers. The logic of the game itself is entirely my own.
 
     ├── LICENSE
     ├── README.md
@@ -24,7 +24,7 @@ The source has a very standard layout. Part of the requirement was that we use n
     ├── docs
     │   └── { Generated documentation }
     ├── lib
-    │   └── { Dev tools needed at run-time and/or compile-time }
+    │   └── { Dev tools needed at run-time }
     ├── src
     │   └── { The source logic for the game }
     └── test
@@ -36,7 +36,7 @@ The source has a very standard layout. Part of the requirement was that we use n
 
 Unit Testing
 ------------
-Unit tests are written with [Mocha] and [Chai]. To run them, open `test/index.xhtml` in a browser.
+Unit tests are written with [Mocha] and [Chai]. The tests only cover the lower-level classes. To run them, open `test/index.xhtml` in a browser.
 
 
 Credits

@@ -93,25 +93,27 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <pre><code>Tetris.js - A Tetris clone for HTML5
-Copyright (C) 2014  Chris Barrick &lt;cbarrick1@gmail.com&gt;
+              <pre><code>Tetris.js - A Tetris clone <span class="hljs-keyword">for</span> HTML5
+Copyright (C) <span class="hljs-number">2014</span>  Chris Barrick &lt;cbarrick1@gmail.com&gt;
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
+the Free Software Foundation, either version <span class="hljs-number">3</span> of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This program is distributed <span class="hljs-keyword">in</span> the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+GNU General Public License <span class="hljs-keyword">for</span> more details.
 
 You should have received a copy of the GNU General Public License
-along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.
+along <span class="hljs-keyword">with</span> <span class="hljs-keyword">this</span> program.  If not, see &lt;http:<span class="hljs-comment">//www.gnu.org/licenses/&gt;.</span>
 </code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+
+define(<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(require, exports, module)</span> {</span>
 <span class="hljs-pi">	'use strict'</span>;
 
 	<span class="hljs-keyword">var</span> Model = <span class="hljs-built_in">require</span>(<span class="hljs-string">'model'</span>);</pre></div></div>
@@ -150,9 +152,9 @@ offset relative to the Tetrimino.</p>
 <li><code>x</code> (Number): The X coordinate, right is positive.</li>
 <li><code>y</code> (Number): The Y coordinate, down is positive.</li>
 <li><code>state</code> (Number): The rotation state.</li>
-<li><code>type</code> (String): The name of this Tetrimino&#39;s shape.</li>
+<li><code>type</code> (String): The name of this Tetrimino’s shape.</li>
 <li><code>bounds</code> (Function Array -&gt; Boolean): A function representing the
-bounds on the Tetrimino&#39;s movement. It gets passed an array of 4
+bounds on the Tetrimino’s movement. It gets passed an array of 4
 coordinate pairs of the form [x,y] that represent the coordinates
 the tetrimino requires. It should return <code>false</code> if any of the
 coordinates are bad.</li>
@@ -160,11 +162,12 @@ coordinates are bad.</li>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>	<span class="hljs-keyword">var</span> Tetrimino = module.exports = Model.extend({
+            <div class="content"><div class='highlight'><pre>
+	<span class="hljs-keyword">var</span> Tetrimino = module.exports = Model.extend({
 
 		attributes: {
 			type: <span class="hljs-string">'T'</span>,
-			bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span><span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>},
+			bounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span> <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>; },
 			offsets: [</pre></div></div>
             
         </li>
@@ -221,7 +224,8 @@ attempted. If none work, the piece is left as-is.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		rotate: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(count)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		rotate: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
 			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
 			<span class="hljs-keyword">var</span> dx;
@@ -230,7 +234,8 @@ attempted. If none work, the piece is left as-is.</p>
 			<span class="hljs-keyword">var</span> oldState = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
 			<span class="hljs-keyword">var</span> newState = (oldState + <span class="hljs-number">1</span>) % <span class="hljs-number">4</span>;
 			<span class="hljs-keyword">var</span> oldBox = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>);
-			<span class="hljs-keyword">var</span> newBox = [];</pre></div></div>
+			<span class="hljs-keyword">var</span> newBox = [];
+			<span class="hljs-keyword">var</span> row, col;</pre></div></div>
             
         </li>
         
@@ -245,9 +250,9 @@ attempted. If none work, the piece is left as-is.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> row = <span class="hljs-number">0</span>; row &lt; oldBox.length; row++) {
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (row = <span class="hljs-number">0</span>; row &lt; oldBox.length; row += <span class="hljs-number">1</span>) {
 				newBox[row] = [];
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; oldBox[row].length; col++) {
+				<span class="hljs-keyword">for</span> (col = <span class="hljs-number">0</span>; col &lt; oldBox[row].length; col += <span class="hljs-number">1</span>) {
 					newBox[row][col] = oldBox[oldBox.length - col - <span class="hljs-number">1</span>][row];
 				}
 			}</pre></div></div>
@@ -265,7 +270,7 @@ attempted. If none work, the piece is left as-is.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> col = <span class="hljs-number">0</span>; col &lt; <span class="hljs-number">5</span>; col++) {
+            <div class="content"><div class='highlight'><pre>			<span class="hljs-keyword">for</span> (col = <span class="hljs-number">0</span>; col &lt; <span class="hljs-number">5</span>; col += <span class="hljs-number">1</span>) {
 				dx = offsets[oldState][col][<span class="hljs-number">0</span>] - offsets[newState][col][<span class="hljs-number">0</span>];
 				dy = offsets[oldState][col][<span class="hljs-number">1</span>] - offsets[newState][col][<span class="hljs-number">1</span>];
 
@@ -275,7 +280,7 @@ attempted. If none work, the piece is left as-is.</p>
 						state: newState,
 						x: x+dx,
 						y: y+dy
-					})
+					});
 					<span class="hljs-keyword">return</span>;
 				}
 			}
@@ -313,21 +318,22 @@ new position.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		move: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(dx, dy)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		move: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(dx, dy)</span> {</span>
 			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
 			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
-			<span class="hljs-keyword">var</span> box = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>)
+			<span class="hljs-keyword">var</span> box = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>);
 
 			<span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._inBounds(box, x+dx, y+dy)) {
 				<span class="hljs-keyword">this</span>.set({
 					x: x + dx,
 					y: y + dy
-				})
+				});
 				x += dx;
 				y += dy;
 			}
 
-			<span class="hljs-keyword">return</span> { <span class="hljs-string">'x'</span>: x, <span class="hljs-string">'y'</span>: y }
+			<span class="hljs-keyword">return</span> { x:x, y:y };
 		},</pre></div></div>
             
         </li>
@@ -356,8 +362,8 @@ new position.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		drop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
-			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
+            <div class="content"><div class='highlight'><pre>
+		drop: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
 
 			<span class="hljs-keyword">var</span> newpos = <span class="hljs-keyword">this</span>.move(<span class="hljs-number">0</span>, <span class="hljs-number">1</span>);
@@ -393,7 +399,8 @@ block of the tetrimino.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		getCoordinates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		getCoordinates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
 			<span class="hljs-keyword">var</span> box = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'box'</span>);
 			<span class="hljs-keyword">var</span> x = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'x'</span>);
 			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
@@ -409,15 +416,16 @@ block of the tetrimino.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
-              <p>Returns a list of (x, y) coordinate pairs for each &quot;block&quot; in the
-given &quot;box&quot; offset by the given coordinates.</p>
+              <p>Returns a list of (x, y) coordinate pairs for each “block” in the
+given “box” offset by the given coordinates.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		_getCoordinates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(box, x, y)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		_getCoordinates: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(box, x, y)</span> {</span>
 			<span class="hljs-keyword">var</span> coords = [];
-			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> dy = <span class="hljs-number">0</span>; dy &lt; box.length; dy++) {
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> dx = <span class="hljs-number">0</span>; dx &lt; box[dy].length; dx++) {
+			<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> dy = <span class="hljs-number">0</span>; dy &lt; box.length; dy += <span class="hljs-number">1</span>) {
+				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> dx = <span class="hljs-number">0</span>; dx &lt; box[dy].length; dx += <span class="hljs-number">1</span>) {
 					<span class="hljs-keyword">if</span> (box[dy][dx] !== <span class="hljs-literal">null</span>) {
 						coords.push([x+dx, y+dy]);
 					}
@@ -466,7 +474,8 @@ function to do the actuall bounds checking.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>		_inBounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(box, x, y)</span> {</span>
+            <div class="content"><div class='highlight'><pre>
+		_inBounds: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(box, x, y)</span> {</span>
 			<span class="hljs-keyword">var</span> bounds = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'bounds'</span>);
 			<span class="hljs-keyword">var</span> ret = bounds(<span class="hljs-keyword">this</span>._getCoordinates(box, x, y));
 			<span class="hljs-keyword">return</span> ret;
@@ -479,16 +488,18 @@ function to do the actuall bounds checking.</p>
 			<span class="hljs-keyword">var</span> y = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'y'</span>);
 			<span class="hljs-keyword">var</span> state = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'state'</span>);
 			<span class="hljs-keyword">var</span> type = <span class="hljs-keyword">this</span>.get(<span class="hljs-string">'type'</span>);
-			<span class="hljs-keyword">var</span> str = <span class="hljs-string">"[Tetrimino: "</span> + type + <span class="hljs-string">' ('</span> + x + <span class="hljs-string">','</span> + y + <span class="hljs-string">') '</span> + state + <span class="hljs-string">']'</span>
+			<span class="hljs-keyword">var</span> i, j;
+
+			<span class="hljs-keyword">var</span> str = <span class="hljs-string">"[Tetrimino: "</span> + type + <span class="hljs-string">' ('</span> + x + <span class="hljs-string">','</span> + y + <span class="hljs-string">') '</span> + state + <span class="hljs-string">']'</span>;
 
 			<span class="hljs-keyword">if</span> (showBox) {
 				str += <span class="hljs-string">'\n+'</span>;
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; box[<span class="hljs-number">0</span>].length; i++) str += <span class="hljs-string">'-'</span>;
-				str += <span class="hljs-string">'+'</span>
+				<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; box[<span class="hljs-number">0</span>].length; i += <span class="hljs-number">1</span>) str += <span class="hljs-string">'-'</span>;
+				str += <span class="hljs-string">'+'</span>;
 
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; box.length; i++) {
+				<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; box.length; i += <span class="hljs-number">1</span>) {
 					str += <span class="hljs-string">"\n|"</span>;
-					<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> j = <span class="hljs-number">0</span>; j &lt; box[i].length; j++) {
+					<span class="hljs-keyword">for</span> (j = <span class="hljs-number">0</span>; j &lt; box[i].length; j += <span class="hljs-number">1</span>) {
 						<span class="hljs-keyword">if</span> (box[i][j] == <span class="hljs-string">'x'</span>) str += <span class="hljs-string">'X'</span>;
 						<span class="hljs-keyword">else</span> str += <span class="hljs-string">' '</span>;
 					}
@@ -496,13 +507,13 @@ function to do the actuall bounds checking.</p>
 				}
 
 				str += <span class="hljs-string">'\n+'</span>;
-				<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; box[<span class="hljs-number">0</span>].length; i++) str += <span class="hljs-string">'-'</span>;
+				<span class="hljs-keyword">for</span> (i = <span class="hljs-number">0</span>; i &lt; box[<span class="hljs-number">0</span>].length; i += <span class="hljs-number">1</span>) str += <span class="hljs-string">'-'</span>;
 				str += <span class="hljs-string">'+'</span>;
 			}
 
 			<span class="hljs-keyword">return</span> str;
 		}
-	})</pre></div></div>
+	});</pre></div></div>
             
         </li>
         
@@ -623,8 +634,8 @@ function to do the actuall bounds checking.</p>
 			],
 			color: <span class="hljs-string">"Cyan"</span>
 		}
-	}
-})</pre></div></div>
+	};
+});</pre></div></div>
             
         </li>
         
